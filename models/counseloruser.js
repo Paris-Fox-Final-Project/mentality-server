@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       CounselorId: DataTypes.INTEGER,
       UserId: DataTypes.INTEGER,
       TopicId: DataTypes.INTEGER,
-      description: DataTypes.STRING,
+      description: DataTypes.TEXT,
       isDone: DataTypes.BOOLEAN,
       isPaid: DataTypes.BOOLEAN,
       isActive: DataTypes.BOOLEAN,
