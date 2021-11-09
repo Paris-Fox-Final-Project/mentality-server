@@ -32,6 +32,7 @@ class CounselorController{
 
     static async createCounselor(req,res,next){
         try {
+            // isi data apa aja
             const {} = req.body
             const created = await Counselor.create({
 
@@ -44,6 +45,7 @@ class CounselorController{
 
     static async updateCounselor(req,res,next){
         try {
+            // isi data apa aja
             const {} = req.body
             const {id} = req.params
             // find one dulu
