@@ -7,8 +7,8 @@
     "start-dev": "nodemon bin/www",
     "start-prod": "node bin/www",
     "test": "npx jest --runInBand --verbose --detechOpenHandles",
-    "unix:db-test:init": "npx sequelize-cli --env=test db:create && npx sequelize-cli --env=test db:migrate",
-    "win:db-test:init": "(npx sequelize-cli --env=test db:create) -and (npx sequelize-cli --env=test db:migrate)"
+    "unix:db-test:init": "sequelize-cli --env=test db:create && sequelize-cli --env=test db:migrate",
+    "win:db-test:init": "(sequelize-cli --env=test db:create) -and (sequelize-cli --env=test db:migrate)"
   },
   "repository": {
     "type": "git",
