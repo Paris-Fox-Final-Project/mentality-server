@@ -1,4 +1,4 @@
-const {Counselor} = require("../models")
+const {Counselor,User} = require("../models")
 
 class CounselorController{
     static async getCounselor(req,res,next){
@@ -33,11 +33,47 @@ class CounselorController{
     static async createCounselor(req,res,next){
         try {
             // isi data apa aja
-            const {} = req.body
-            const created = await Counselor.create({
+            const {email,
+                password,
+                name,
+                gender,
+                avatarUrl,
+                motto,
+                specialist,
+                about,
+                price} = req.body
 
+            const createdUserCounselor = await User.create({
+                email:email,
+                password:password,
+                role: "Counselor",
+                name: name,
+                gender: gender,
+                avatarUrl: avatarUrl
             })
-            res.status(201).json(created)
+
+            const createdCounselor = await Counselor.create({
+                UserId: createdUserCounselor.id,
+                motto: motto,
+                specialist:specialist,
+                about:about,
+                price:price
+            })
+            const payload = {
+                id: createdUserCounselor.id,
+                email: createdUserCounselor.email,
+                role: createdUserCounselor.role,
+                name: createdUserCounselor.name,
+                gender: createdUserCounselor.gender,
+                avatarUrl: createdUserCounselor.avatarUrl,
+                motto: createdCounselor.module,
+                specialist: createdCounselor.specialist,
+                about: createdCounselor.about,
+                price: createdCounselor.price
+            }
+            res.status(201).json({
+                counselor: payload,
+            })
         } catch (err) {
             console.log(err, 'err create counselor')
         }
@@ -46,17 +82,20 @@ class CounselorController{
     static async updateCounselor(req,res,next){
         try {
             // isi data apa aja
-            const {} = req.body
+            const {motto,specialist,about,price} = req.body
             const {id} = req.params
             // find one dulu
             const updated = await Counselor.update({
-
+                motto: motto,
+                specialist:specialist,
+                about:about,
+                price:price
             },{
                 where:{
-                    id:id
+                    UserId:id
                 }
             })
-
+            res.status(200).json({updated: updated})
         } catch (err) {
             console.log(err, 'err update counselor')
         }
