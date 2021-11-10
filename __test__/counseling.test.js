@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../app");
 const { Counselor, User, Topic } = require("../models");
 
-beforeAll((done) => {
+beforeEach((done) => {
   const dummyCounselor = {
     UserId: 2,
     motto: "Stay foolish, stay hungry",
@@ -31,14 +31,15 @@ beforeAll((done) => {
   ];
 
   const topic = { name: "family " };
-  User.bulkCreate(dummeyUsers)
+  User.destory({ truncate: false, cascade: true, restartIdentity: true })
+    .then(() => User.bulkCreate(dummeyUsers))
     .then(() => Counselor.create(dummyCounselor))
     .then(() => Topic.create(topic))
     .then(() => done())
     .catch((error) => done(error));
 });
 
-afterAll((done) => {
+afterEach((done) => {
   const option = {
     restartIdentity: true,
     truncate: true,

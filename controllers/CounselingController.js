@@ -3,7 +3,7 @@ class CounselingController {
   static async createCounseling(req, res, next) {
     const { CounselorId, TopicId, description, schedule, totalSession } =
       req.body;
-    const UserId = 1;
+    const { id: UserId } = req.user;
     try {
       const counselor = await Counselor.findByPk(CounselorId, {
         include: [
