@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.TEXT,
       isDone: DataTypes.BOOLEAN,
       isPaid: DataTypes.BOOLEAN,
-      isActive: DataTypes.BOOLEAN,
       transactionAmount: DataTypes.INTEGER,
       schedule: DataTypes.DATE,
+      totalSession: DataTypes.INTEGER,
     },
     {
       sequelize,
