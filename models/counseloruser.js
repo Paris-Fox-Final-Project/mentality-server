@@ -27,5 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "CounselorUser",
     }
   );
+  CounselorUser.beforeCreate((counselorUser) => {
+    counselorUser.isDone = false;
+    counselorUser.isActive = false;
+    counselorUser.isPaid = false;
+  });
   return CounselorUser;
 };
