@@ -1,15 +1,16 @@
 const app = require("../app");
 const request = require("supertest");
+const { encodePassword } = require("../helpers/bcrypt.js")
 const { sequelize } = require("../models");
 const { queryInterface } = sequelize;
 
-const user1 = {
-  email: "usertest@mail.com",
-  password: "usertest",
-  role: 'user',
-  name: "user test",
-  gender: "user gender",
-  avatarUrl: "user image"
+const admin1 = {
+  email: "admintest@mail.com",
+  password: encodePassword("admintest"),
+  role: 'admin',
+  name: "admin test",
+  gender: "admin gender",
+  avatarUrl: "admin image"
 };
 
 afterAll((done) => {
@@ -25,26 +26,26 @@ afterAll((done) => {
 });
 
 describe("User Routes Test", () => {
-  describe("POST /register - create new user", () => {
+  describe("POST /admin/register - create new user", () => {
     test("201 Success register - should create new User", (done) => {
       request(app)
-        .post("/register")
-        .send(user1)
+        .post("/admin/register")
+        .send(admin1)
         .end((err, res) => {
           if (err) return done(err);
           const { body, status } = res;
 
           expect(status).toBe(201);
           expect(body).toHaveProperty("id", expect.any(Number));
-          expect(body).toHaveProperty("name", user1.name);
-          expect(body).toHaveProperty("email", user1.email);
+          expect(body).toHaveProperty("name", admin1.name);
+          expect(body).toHaveProperty("email", admin1.email);
           return done();
         });
     });
 
     test("400 Failed register - should return error if email is null", (done) => {
       request(app)
-        .post("/register")
+        .post("/admin/register")
         .send({
           password: "qweqwe",
         })
@@ -60,8 +61,8 @@ describe("User Routes Test", () => {
 
     test("400 Failed register - should return error if email is already exists", (done) => {
       request(app)
-        .post("/register")
-        .send(user1)
+        .post("/admin/register")
+        .send(admin1)
         .end((err, res) => {
           if (err) return done(err);
           const { body, status } = res;
@@ -74,7 +75,7 @@ describe("User Routes Test", () => {
 
     test("400 Failed register - should return error if wrong email format", (done) => {
       request(app)
-        .post("/register")
+        .post("/admin/register")
         .send({
           email: "random",
           name: "Sample User",
@@ -91,11 +92,11 @@ describe("User Routes Test", () => {
     });
   });
 
-  describe("POST /login - user login", () => {
+  describe("POST /admin/login - admin login", () => {
     test("200 Success login - should return access_token", (done) => {
       request(app)
-        .post("/login")
-        .send(user1)
+        .post("/admin/login")
+        .send(admin1)
         .end((err, res) => {
           if (err) return done(err);
           const { body, status } = res;
@@ -108,7 +109,7 @@ describe("User Routes Test", () => {
 
     test("401 Failed login - should return error", (done) => {
       request(app)
-        .post("/login")
+        .post("/admin/login")
         .send({
           email: "hello@mail.com",
           password: "salahpassword",
