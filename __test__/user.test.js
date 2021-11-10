@@ -14,12 +14,12 @@ const user1 = {
 
 afterAll((done) => {
   queryInterface.bulkDelete('Users', {})
-    // .then(() => {
-    //   return queryInterface.bulkDelete('Courses', {});
-    // })
-    // .then(() => {
-    //   return queryInterface.bulkDelete('MyCourses', {});
-    // })
+    .then(() => {
+      return queryInterface.bulkDelete('Courses', {});
+    })
+    .then(() => {
+      return queryInterface.bulkDelete('MyCourses', {});
+    })
     .then(() => done())
     .catch((err) => done(err));
 });

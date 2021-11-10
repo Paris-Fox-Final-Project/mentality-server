@@ -13,7 +13,6 @@ const authentication = async (req, res, next) => {
         if (verifiedUser) {
           req.user = { 
             id: verifiedUser.id, 
-            username: verifiedUser.username, 
             email: verifiedUser.email, 
             role: verifiedUser.role
           }

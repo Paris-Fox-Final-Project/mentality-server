@@ -15,7 +15,10 @@ class UserController {
       }
 
       const newUser = await User.create(dataUser)
-      res.status(201).json({ id: newUser.id, email: newUser.email })
+      res.status(201).json({ 
+        id: newUser.id, 
+        email: newUser.email 
+      })
     } catch (err) {
       next(err)
     }
@@ -29,7 +32,11 @@ class UserController {
       if (selectedUser) {
         const isUserPassExist = decodePassword(password, selectedUser.password)
         if (isUserPassExist) {
-          const access_token = generateToken({ id: selectedUser.id, email: selectedUser.email, role: selectedUser.role })
+          const access_token = generateToken({ 
+            id: selectedUser.id, 
+            email: selectedUser.email, 
+            role: selectedUser.role 
+          })
           res.status(200).json({ access_token })
         } else {
           throw { name: 'UNAUTHORIZED_LOGIN' }
@@ -54,7 +61,10 @@ class UserController {
       }
 
       const newAdmin = await User.create(dataAdmin)
-      res.status(201).json({ id: newAdmin.id, email: newAdmin.email })
+      res.status(201).json({ 
+        id: newAdmin.id, 
+        email: newAdmin.email 
+      })
     } catch (err) {
       next(err)
     }
@@ -68,7 +78,11 @@ class UserController {
       if (selectedAdmin) {
         const isAdminPassExist = decodePassword(password, selectedAdmin.password)
         if (isAdminPassExist) {
-          const access_token = generateToken({ id: selectedAdmin.id, email: selectedUser.email, role: selectedUser.role })
+          const access_token = generateToken({ 
+            id: selectedAdmin.id, 
+            email: selectedAdmin.email, 
+            role: selectedAdmin.role 
+          })
           res.status(200).json({ access_token })
         } else {
           throw { name: 'UNAUTHORIZED_LOGIN' }
