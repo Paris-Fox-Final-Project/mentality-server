@@ -55,8 +55,8 @@ describe("POST /counseling - create counseling schedule", () => {
     CounselorId: 1,
     description: "Example description",
     TopicId: 1,
-    schedule: new Date(),
-    session: 2,
+    schedule: `2021-11-15 10:00`,
+    totalSession: 2,
   };
   test("201 counseling schedule successful created", (done) => {
     request(app)
@@ -73,9 +73,9 @@ describe("POST /counseling - create counseling schedule", () => {
 
         expect(counseling).toHaveProperty("transactionAmount");
         expect(counseling).toHaveProperty("Counselor");
-        expect(counseling.transactionAmount).toBe(
-          counseling.Counselor.price * payload.session
-        );
+
+        const value = counseling.totalSession * counseling.Counselor.price;
+        expect(counseling.transactionAmount).toBe(value);
 
         expect(counseling).toHaveProperty("isDone");
         expect(counseling.isDone).toBe(false);

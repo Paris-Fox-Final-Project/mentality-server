@@ -1,7 +1,8 @@
 const { CounselorUser, Counselor, User } = require("../models");
 class CounselingController {
   static async createCounseling(req, res, next) {
-    const { CounselorId, TopicId, description, schedule, session } = req.body;
+    const { CounselorId, TopicId, description, schedule, totalSession } =
+      req.body;
     const UserId = 1;
     try {
       const counselor = await Counselor.findByPk(CounselorId, {
@@ -27,7 +28,8 @@ class CounselingController {
         UserId,
         schedule,
         CounselorId,
-        transactionAmount: counselor.price * session,
+        totalSession,
+        transactionAmount: counselor.price * totalSession,
       });
 
       res.status(201).json({
