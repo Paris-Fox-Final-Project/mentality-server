@@ -5,7 +5,14 @@ class CounselingController {
     const UserId = 1;
     try {
       const counselor = await Counselor.findByPk(CounselorId, {
-        include: [User],
+        include: [
+          {
+            model: User,
+            attributes: {
+              exclude: ["password", "createdAt", "updatedAt"],
+            },
+          },
+        ],
       });
 
       if (!counselor) {

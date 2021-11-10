@@ -80,6 +80,11 @@ describe("POST /counseling - create counseling schedule", () => {
         expect(counseling.isPaid).toBe(false);
         expect(counseling).toHaveProperty("isActive");
         expect(counseling.isActive).toBe(false);
+        expect(counseling).toHaveProperty("schedule");
+
+        const { Counselor } = counseling;
+        expect(Counselor).toHaveProperty("User");
+        expect(Counselor.User.name).toBe("Vivi");
         done();
       })
       .catch((error) => done(error));
