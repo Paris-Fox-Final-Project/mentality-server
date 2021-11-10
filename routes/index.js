@@ -10,12 +10,14 @@ router.get('/', (req,res)=>{
     res.send('hello cuy')
 })
 
-router.use("/counselor", counselor)
-
 router.post("/register", userController.register)
 router.post("/login", userController.login)
 router.post("/admin/register", userController.registerAdmin)
 router.post("/admin/login", userController.loginAdmin)
+
+router.use(authentication)
+router.use("/counselor", counselor)
+
 
 router.use(errorHandler)
 
