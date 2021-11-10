@@ -54,7 +54,7 @@ class UserController {
       const dataAdmin = {
         email: req.body.email,
         password: req.body.password,
-        role: 'admin',
+        role: "admin",
         name: req.body.name,
         gender: req.body.gender,
         avatarUrl: req.body.avatarUrl
@@ -76,16 +76,20 @@ class UserController {
 
       const selectedAdmin = await User.findOne({ where: { email }})
       if (selectedAdmin) {
-        const isAdminPassExist = decodePassword(password, selectedAdmin.password)
-        if (isAdminPassExist) {
-          const access_token = generateToken({ 
-            id: selectedAdmin.id, 
-            email: selectedAdmin.email, 
-            role: selectedAdmin.role 
-          })
+        if (selectedAdmin.role === "admin") {
+          const isAdminPassExist = decodePassword(password, selectedAdmin.password)
+          if (isAdminPassExist) {
+            const access_token = generateToken({ 
+              id: selectedAdmin.id, 
+              email: selectedAdmin.email, 
+              role: selectedAdmin.role 
+            })
           res.status(200).json({ access_token })
+          } else {
+            throw { name: 'UNAUTHORIZED_LOGIN' }
+          }
         } else {
-          throw { name: 'UNAUTHORIZED_LOGIN' }
+          throw { name: 'UNAUTHORIZED_ROLE' }
         }
       } else {
         throw { name: 'UNAUTHORIZED_LOGIN' }

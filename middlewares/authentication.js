@@ -8,7 +8,7 @@ const authentication = async (req, res, next) => {
       const verifiedToken = checkToken(token)
       if (verifiedToken) {
         const verifiedUser = await User.findOne({ 
-          where: { email: verifiedToken.email, role: verifiedToken.role }
+          where: { email: verifiedToken.email }
         })
         if (verifiedUser) {
           req.user = { 
