@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       isPaid: DataTypes.BOOLEAN,
       isActive: DataTypes.BOOLEAN,
       transactionAmount: DataTypes.INTEGER,
+      schedule: DataTypes.DATE,
     },
     {
       sequelize,
