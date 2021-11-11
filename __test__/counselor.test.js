@@ -6,8 +6,6 @@ const {Counselor,User} = require("../models");
 const {generateToken} = require("../helpers/jwt")
 const {encodePassword} = require("../helpers/bcrypt")
 
-
-// seed data admin 1 buat cek token
 const admin = {
     email: "admin1@gmail.com",
     password: encodePassword("789456123"),
@@ -106,7 +104,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(200);
                 expect(Array.isArray(body)).toBeTruthy();
                 expect(body.length).toBeGreaterThan(0);
@@ -116,14 +113,13 @@ describe("Counserlor Routes Test", ()=>{
                 done(err)
             })
         })
-        // Kondisi yg error gmn
+        
         test("401 Error - failed to get data with invalid token", (done)=>{
             request(app)
             .get("/counselors")
             .set("access_token", falsyToken)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Invalid Access Token");
                 done();
@@ -137,7 +133,6 @@ describe("Counserlor Routes Test", ()=>{
             .get("/counselors")
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Access Token is Required");
                 done();
@@ -154,11 +149,10 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(200);
                 expect(body).toHaveProperty("id", expect.any(Number));
-                expect(body).toHaveProperty("UserId", 6);
-                // expect(body).toHaveProperty("id", expect.any(Number));
+                expect(body).toHaveProperty("UserId", body.UserId);
+                expect(body.UserId).toBe(body.User.id)
                 expect(body).toHaveProperty("motto");
                 expect(body).toHaveProperty("about");
                 expect(body).toHaveProperty("price", expect.any(Number));
@@ -168,14 +162,13 @@ describe("Counserlor Routes Test", ()=>{
                 done(err)
             })
         })
-        // Kondisi yg error gmn
+
         test("401 Error - failed to get data with invalid token", (done)=>{
             request(app)
             .get(`/counselors/${1}`)
             .set("access_token", falsyToken)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Invalid Access Token");
                 done();
@@ -189,7 +182,6 @@ describe("Counserlor Routes Test", ()=>{
             .get(`/counselors/${1}`)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Access Token is Required");
                 done();
@@ -204,7 +196,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Counselor not found!");
                 done();
@@ -222,7 +213,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(201);
                 expect(body.counselor).toHaveProperty("id", expect.any(Number));
                 expect(body.counselor).toHaveProperty("email");
@@ -237,7 +227,7 @@ describe("Counserlor Routes Test", ()=>{
                 done(err)
             })
         })
-        // Kondisi yg error gmn
+
         test("401 Failed create counselor invalid token", (done)=>{
             request(app)
             .post("/counselors")
@@ -245,7 +235,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", falsyToken)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Invalid Access Token");
                 done();
@@ -260,7 +249,6 @@ describe("Counserlor Routes Test", ()=>{
             .send(createTestCase)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Access Token is Required");
                 done();
@@ -287,7 +275,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'Email cannot be null' ])
                 done();
@@ -314,7 +301,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'Email is required', 'Invalid email format' ])
                 done();
@@ -340,7 +326,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'Password cannot be null' ])
                 done();
@@ -367,7 +352,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '///////////////')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'Password is required' ])
                 done();
@@ -394,7 +378,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '///////////////')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'Specialist Cannot be Empty' ])
                 done();
@@ -421,7 +404,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '///////////////')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'About Cannot be Empty' ])
                 done();
@@ -448,7 +430,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '///////////////')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'Minimum price is 100000' ])
                 done();
@@ -471,7 +452,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(200);
                 expect(body).toHaveProperty("message", "Counselor Updated");
                 done();
@@ -480,7 +460,7 @@ describe("Counserlor Routes Test", ()=>{
                 done(err)
             })
         })
-        // Kondisi yg error gmn
+
         test("401 Failed update counselors invalid token", (done)=>{
             request(app)
             .post(`/counselors/${1}`)
@@ -493,7 +473,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", falsyToken)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Invalid Access Token");
                 done();
@@ -513,7 +492,6 @@ describe("Counserlor Routes Test", ()=>{
             })
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '||||||||||||||||||')
                 expect(status).toBe(401);
                 expect(body).toHaveProperty("message", "Access Token is Required");
                 done();
@@ -534,7 +512,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                console.log(body, '///////////////')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'Specialist Cannot be Empty' ])
                 done();
@@ -555,7 +532,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '///////////////')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'About Cannot be Empty' ])
                 done();
@@ -576,7 +552,6 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                // console.log(body, '///////////////')
                 expect(status).toBe(400);
                 expect(body).toHaveProperty('message', [ 'Minimum price is 100000' ])
                 done();

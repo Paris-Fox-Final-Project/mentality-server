@@ -6,14 +6,20 @@ class CounselorController{
             const counselors = await Counselor.findAll()
             res.status(200).json(counselors)
         } catch (err) {
-            console.log(err, 'err get counselor')
+            next(err)
         }
     }
 
     static async getCounselorById(req,res,next){
         try {
             const {id} = req.params
+
             const counselor = await Counselor.findOne({
+                include: [{
+                    model: User,
+                    attributes: {
+                        exclude:['password','createdAt', 'updatedAt']}
+                }],
                 where: {
                     id: id
                 }
@@ -23,14 +29,12 @@ class CounselorController{
             }
             res.status(200).json(counselor)
         } catch (err) {
-            console.log(err, 'err get counselor by id')
             next(err)
         }
     }
 
     static async createCounselor(req,res,next){
         try {
-            // isi data apa aja
             const {email,
                 password,
                 name,
@@ -73,17 +77,14 @@ class CounselorController{
                 counselor: payload,
             })
         } catch (err) {
-            console.log(err, 'err create counselor')
             next(err)
         }
     }
 
     static async updateCounselor(req,res,next){
         try {
-            // isi data apa aja
             const {motto,specialist,about,price} = req.body
             const {id} = req.params
-            // find one dulu
             const updated = await Counselor.update({
                 motto: motto,
                 specialist:specialist,
@@ -96,7 +97,6 @@ class CounselorController{
             })
             res.status(200).json({"message": "Counselor Updated"})
         } catch (err) {
-            console.log(err, 'err update counselor')
             next(err)
         }
     }
