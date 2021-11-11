@@ -52,8 +52,8 @@ module.exports = (sequelize, DataTypes) => {
           notNull: {msg: "Price Cannot be null"},
           notEmpty: {msg: "Price Cannot be Empty"},
           minPrice(value){
-            if(value < 100000){
-              throw {msg: "Minimum price is 100000"}
+            if(+value < 100000){
+              throw new Error("Minimum price is 100000")
             }
           }
         }

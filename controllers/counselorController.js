@@ -19,14 +19,12 @@ class CounselorController{
                 }
             })
             if(!counselor){
-                throw {name: "counselorNotFound"}
+                throw {name: "COUNSELOR_NOT_FOUND"}
             }
             res.status(200).json(counselor)
         } catch (err) {
             console.log(err, 'err get counselor by id')
-            if(err.name === "counselorNotFound"){
-                res.status(400).json({message: "Counselor not found!"})
-            }
+            next(err)
         }
     }
 
@@ -76,6 +74,7 @@ class CounselorController{
             })
         } catch (err) {
             console.log(err, 'err create counselor')
+            next(err)
         }
     }
 
@@ -93,11 +92,12 @@ class CounselorController{
             },{
                 where:{
                     UserId:id
-                }
+                },
             })
-            res.status(200).json({updated: updated})
+            res.status(200).json({"message": "Counselor Updated"})
         } catch (err) {
             console.log(err, 'err update counselor')
+            next(err)
         }
     }
 }
