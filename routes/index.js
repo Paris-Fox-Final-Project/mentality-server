@@ -16,7 +16,7 @@ router.post("/admin/register", userController.registerAdmin)
 router.post("/admin/login", userController.loginAdmin)
 
 router.use(authentication)
-router.use("/counselor", counselor)
+router.use("/counselors", counselor)
 
 
 router.use(errorHandler)
