@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { Sequelize } = require(".");
 module.exports = (sequelize, DataTypes) => {
   class CounselorUser extends Model {
     /**
@@ -57,8 +58,10 @@ module.exports = (sequelize, DataTypes) => {
   );
   CounselorUser.beforeCreate((counselorUser) => {
     counselorUser.isDone = false;
-    counselorUser.isActive = false;
     counselorUser.isPaid = false;
+  });
+  CounselorUser.afterValidate((counselorUser) => {
+    counselorUser.schedule = `${counselorUser.schedule}+07`;
   });
   return CounselorUser;
 };

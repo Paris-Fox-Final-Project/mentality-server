@@ -1,7 +1,14 @@
 const request = require("supertest");
 const app = require("../app");
 const { generateToken } = require("../helpers/jwt");
-const { Counselor, User, Topic, CounselorUser } = require("../models");
+const {
+  Counselor,
+  User,
+  Topic,
+  sequelize,
+  CounselorUser,
+} = require("../models");
+const { queryInterface } = sequelize;
 
 beforeAll((done) => {
   const dummyCounselor = {
@@ -145,16 +152,53 @@ describe("POST /counseling - create counseling schedule", () => {
   });
 });
 
+const dummies = [
+  {
+    CounselorId: 1,
+    transactionAmount: 195000,
+    UserId: 1,
+    schedule: "2021-11-11 21:58:00+07",
+    isPaid: true,
+    totalSession: 1,
+    description: "example of description",
+    TopicId: 1,
+    isDone: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
+
 describe("PATCH /counseling/:conselingId/done", () => {
-  test("(400 - Bad Request) Failed because failed because it's not time", (done) => {
+  beforeEach((done) => {
+    queryInterface
+      .bulkInsert("CounselorUsers", dummies)
+      .then((data) => {
+        done();
+      })
+      .catch((error) => done(error));
+  });
+  test("(400 - Bad Request) failed because it's not time", (done) => {
     request(app)
       .patch("/counseling/1/done")
       .set({ access_token: token })
       .then((response) => {
         const { body, status } = response;
         expect(body).toHaveProperty("message");
+        expect(body.message).toBe("Sorry, counseling hasn't started yet");
         expect(status).toBe(400);
         done();
       });
+  });
+  test("(200 - Success) Counseling is done", (done) => {
+    request(app)
+      .patch("/counseling/2/done")
+      .set({ access_token: token })
+      .then((response) => {
+        const { body, status } = response;
+        console.log(body, ">>>> body");
+        expect(status).toBe(200);
+        done();
+      })
+      .catch((error) => done(error));
   });
 });

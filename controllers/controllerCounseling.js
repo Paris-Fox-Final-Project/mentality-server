@@ -1,4 +1,5 @@
 const { CounselorUser, Counselor, User } = require("../models");
+const moment = require("moment");
 class CounselingController {
   static async createCounseling(req, res, next) {
     const { CounselorId, TopicId, description, schedule, totalSession } =
@@ -48,22 +49,21 @@ class CounselingController {
 
     try {
       const counseling = await CounselorUser.findByPk(counselingId);
-      console.log(counseling, "< counseling");
+      console.log(counseling, ">>>>>>>.");
       if (!counseling) {
         throw {
           name: "COUNSELING_NOT_FOUND",
         };
       }
 
-      // if (!counseling.isPaid) {
-      //   throw {
-      //     name: "COUNSELING_NOT_PAID",
-      //   };
-      // }
+      if (!counseling.isPaid) {
+        throw {
+          name: "COUNSELING_NOT_START",
+        };
+      }
 
       const schedule = Date.parse(counseling.schedule);
-      const today = Date.parse(new Date());
-      console.log(schedule > today, ">>>>>>>");
+      const today = Date.parse(new Date().toLocaleString());
       if (schedule > today) {
         throw {
           name: "COUNSELING_NOT_START",
