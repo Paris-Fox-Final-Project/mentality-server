@@ -13,15 +13,7 @@ const userRegister = {
 
 afterAll((done) => {
   queryInterface
-    .bulkDelete(
-      "Users",
-      {},
-      {
-        truncate: true,
-        restartIdentity: true,
-        cascade: true,
-      }
-    )
+    .bulkDelete("Users", {})
     .then(() => done())
     .catch((err) => done(err));
 });

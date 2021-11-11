@@ -15,13 +15,13 @@ class CounselingController {
           },
         ],
       });
-
       if (!counselor) {
         throw {
-          name: "Counselor Not Found",
+          name: "COUNSELOR_NOT_FOUND",
         };
       }
 
+      const transactionAmount = counselor.price * Number(totalSession);
       const counseling = await CounselorUser.create({
         TopicId,
         description,
@@ -29,7 +29,7 @@ class CounselingController {
         schedule,
         CounselorId,
         totalSession,
-        transactionAmount: counselor.price * totalSession,
+        transactionAmount,
       });
 
       res.status(201).json({
