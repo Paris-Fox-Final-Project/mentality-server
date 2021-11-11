@@ -42,6 +42,44 @@ class CounselingController {
       next(error);
     }
   }
+
+  static async changeDoneStatusCounseling(req, res, next) {
+    const { counselingId } = req.params;
+
+    try {
+      const counseling = await CounselorUser.findByPk(counselingId);
+
+      if (!counseling) {
+        throw {
+          name: "COUNSELING_NOT_FOUND",
+        };
+      }
+
+      if (!counseling.isPadi) {
+        throw {
+          name: "COUNSELING_NOT_PAID",
+        };
+      }
+
+      // const schedule = Date.parse(counseling.schedule);
+      // const today = Date.parse(new Date());
+
+      // if (today < schedule) {
+      //   throw {
+      //     name: "COUNSELING_NOT_START",
+      //   };
+      // }
+      const [_, [counselingUpdated]] = await CounselorUser.update(
+        { isDone: true },
+        { where: { id: counseling.id }, returning: true }
+      );
+      res.status(200).json({
+        counseling: counselingUpdated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = CounselingController;

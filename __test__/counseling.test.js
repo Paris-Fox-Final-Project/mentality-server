@@ -53,12 +53,13 @@ afterEach((done) => {
     .catch((error) => done(error));
 });
 
+const token = generateToken({
+  email: "johndoe@mail.com",
+  id: 1,
+  role: "user",
+});
+
 describe("POST /counseling - create counseling schedule", () => {
-  const token = generateToken({
-    email: "johndoe@mail.com",
-    id: 1,
-    role: "user",
-  });
   test("(201 - OK) Create New Schedule for Counseling", (done) => {
     const payload = {
       CounselorId: 1,
@@ -138,6 +139,27 @@ describe("POST /counseling - create counseling schedule", () => {
         expect(body).toHaveProperty("message");
         expect(body.message).toBe("Counselor not found");
         expect(status).toBe(404);
+        done();
+      })
+      .catch((error) => done(error));
+  });
+});
+
+describe("PATCH /counseling/:counselingId/done - change status counseling to done", () => {
+  test("200 - OK Counseling isDone status must be true", (done) => {
+    request(app)
+      .patch("/counseling/1/done")
+      .set({ access_token: token })
+      .then((response) => {
+        const { body, status } = response;
+        expect(body).toHaveProperty("counseling");
+        expect(body.counseling).toEqual(expect.any(Object));
+        expect(status).toBe(200);
+
+        const { counseling } = body;
+        expect(counseling).toHaveProperty("id");
+        expect(counseling.id).toBe(1);
+        expect(counseling.isDone).toBe(true);
         done();
       })
       .catch((error) => done(error));
