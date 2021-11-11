@@ -13,7 +13,7 @@ router.post("/admin/register", userController.registerAdmin);
 router.post("/admin/login", userController.loginAdmin);
 router.use(authentication);
 router.use("/counseling", counselingRouter);
-router.use("/counselor", counselingRouter);
+router.use("/counselors", counselor);
 router.use(errorHandler);
 
 module.exports = router;

@@ -137,29 +137,8 @@ describe("POST /counseling - create counseling schedule", () => {
       .then((response) => {
         const { body, status } = response;
         expect(body).toHaveProperty("message");
-        expect(body.message).toBe("Counselor not found");
+        expect(body.message).toBe("Counselor not found!");
         expect(status).toBe(404);
-        done();
-      })
-      .catch((error) => done(error));
-  });
-});
-
-describe("PATCH /counseling/:counselingId/done - change status counseling to done", () => {
-  test("200 - OK Counseling isDone status must be true", (done) => {
-    request(app)
-      .patch("/counseling/1/done")
-      .set({ access_token: token })
-      .then((response) => {
-        const { body, status } = response;
-        expect(body).toHaveProperty("counseling");
-        expect(body.counseling).toEqual(expect.any(Object));
-        expect(status).toBe(200);
-
-        const { counseling } = body;
-        expect(counseling).toHaveProperty("id");
-        expect(counseling.id).toBe(1);
-        expect(counseling.isDone).toBe(true);
         done();
       })
       .catch((error) => done(error));
