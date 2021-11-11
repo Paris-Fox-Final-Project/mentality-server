@@ -1,9 +1,9 @@
 const request = require("supertest");
 const app = require("../app");
 const { generateToken } = require("../helpers/jwt");
-const { Counselor, User, Topic } = require("../models");
+const { Counselor, User, Topic, CounselorUser } = require("../models");
 
-beforeEach((done) => {
+beforeAll((done) => {
   const dummyCounselor = {
     UserId: 2,
     motto: "Stay foolish, stay hungry",
@@ -40,7 +40,7 @@ beforeEach((done) => {
     .catch((error) => done(error));
 });
 
-afterEach((done) => {
+afterAll((done) => {
   const option = {
     restartIdentity: true,
     truncate: true,
@@ -142,5 +142,19 @@ describe("POST /counseling - create counseling schedule", () => {
         done();
       })
       .catch((error) => done(error));
+  });
+});
+
+describe("PATCH /counseling/:conselingId/done", () => {
+  test("(400 - Bad Request) Failed because failed because it's not time", (done) => {
+    request(app)
+      .patch("/counseling/1/done")
+      .set({ access_token: token })
+      .then((response) => {
+        const { body, status } = response;
+        expect(body).toHaveProperty("message");
+        expect(status).toBe(400);
+        done();
+      });
   });
 });

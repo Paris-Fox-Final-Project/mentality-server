@@ -31,6 +31,9 @@ const errorHandler = async (err, req, res, next) => {
     case "FORBIDDEN_ACCESS":
       res.status(403).json({ message: "Access Feature is Forbidden" });
       break;
+    case "COUNSELING_NOT_START":
+      res.status(400).json({ message: "Failed" });
+      break;
     default:
       res.status(500).json({ message: "Internal Server Error" });
       break;

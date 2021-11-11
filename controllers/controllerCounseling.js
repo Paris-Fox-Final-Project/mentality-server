@@ -48,27 +48,27 @@ class CounselingController {
 
     try {
       const counseling = await CounselorUser.findByPk(counselingId);
-
+      console.log(counseling, "< counseling");
       if (!counseling) {
         throw {
           name: "COUNSELING_NOT_FOUND",
         };
       }
 
-      if (!counseling.isPadi) {
-        throw {
-          name: "COUNSELING_NOT_PAID",
-        };
-      }
-
-      // const schedule = Date.parse(counseling.schedule);
-      // const today = Date.parse(new Date());
-
-      // if (today < schedule) {
+      // if (!counseling.isPaid) {
       //   throw {
-      //     name: "COUNSELING_NOT_START",
+      //     name: "COUNSELING_NOT_PAID",
       //   };
       // }
+
+      const schedule = Date.parse(counseling.schedule);
+      const today = Date.parse(new Date());
+      console.log(schedule > today, ">>>>>>>");
+      if (schedule > today) {
+        throw {
+          name: "COUNSELING_NOT_START",
+        };
+      }
       const [_, [counselingUpdated]] = await CounselorUser.update(
         { isDone: true },
         { where: { id: counseling.id }, returning: true }
