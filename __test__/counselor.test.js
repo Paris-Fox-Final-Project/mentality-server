@@ -196,7 +196,7 @@ describe("Counserlor Routes Test", ()=>{
             .set("access_token", access_token)
             .then((response)=>{
                 const { body, status } = response;
-                expect(status).toBe(401);
+                expect(status).toBe(404);
                 expect(body).toHaveProperty("message", "Counselor not found!");
                 done();
             })

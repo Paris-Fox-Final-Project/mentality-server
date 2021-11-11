@@ -23,7 +23,7 @@ const errorHandler = async (err, req, res, next) => {
       res.status(401).json({ message: 'Authentication is Failed' })
       break;
     case 'COUNSELOR_NOT_FOUND':
-      res.status(401).json({message: "Counselor not found!"})
+      res.status(404).json({message: "Counselor not found!"})
       break;
     case 'FORBIDDEN_ACCESS':
       res.status(403).json({ message: 'Access Feature is Forbidden' })
