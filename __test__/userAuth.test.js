@@ -18,7 +18,7 @@ afterAll((done) => {
 });
 
 
-describe("User Routes Test", () => {
+describe.skip("User Routes Test", () => {
   describe('POST /register', () => {
     test('[201 - SUCCESS] Register - Create New User', (done) => {
       request(app)
