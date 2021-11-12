@@ -4,6 +4,7 @@ const { generateToken } = require("../helpers/jwt.js");
 
 class UserController {
   static async register(req, res, next) {
+    const avatarUrl = req.avatarUrl;
     try {
       const dataUser = {
         email: req.body.email,
@@ -11,7 +12,7 @@ class UserController {
         role: "user",
         name: req.body.name,
         gender: req.body.gender,
-        avatarUrl: req.body.avatarUrl,
+        avatarUrl: avatarUrl,
       };
 
       const newUser = await User.create(dataUser);
@@ -119,6 +120,45 @@ class UserController {
       res.status(200).json({
         user: user,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async editDataUserById(req, res, next) {
+    const { userId } = req.params;
+    const { name, gender } = req.body;
+    try {
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        throw {
+          name: "USER_NOT_FOUND",
+        };
+      }
+
+      const avatarUrl = req.avatarUrl ? req.avatarUrl : user.avatarUrl;
+      const payload = {
+        name,
+        gender,
+        avatarUrl,
+      };
+
+      const [_, [userUpdated]] = await User.update(payload, {
+        where: {
+          id: userId,
+        },
+        returning: true,
+      });
+      const dataResponse = {
+        id: userUpdated.id,
+        name: userUpdated.name,
+        role: userUpdated.role,
+        gender: userUpdated.gender,
+        avatarUrl: userUpdated.avatarUrl,
+        email: userUpdated.email,
+      };
+      res.status(200).json({ user: dataResponse });
     } catch (error) {
       next(error);
     }
