@@ -8,9 +8,14 @@ const router = express.Router();
 const counselor = require("./counselorRoute");
 const userRouter = require("./userRouter.js");
 const topicRouter = require("./topicRouter.js");
-
-
-router.post("/register", userController.register);
+const { uploadAvatar } = require("../middlewares/multer.js");
+const { avatarStorage } = require("../middlewares/aws.js");
+router.post(
+  "/register",
+  uploadAvatar.single("avatar_url"),
+  avatarStorage,
+  userController.register
+);
 router.post("/login", userController.login);
 router.post("/admin/register", userController.registerAdmin);
 router.post("/admin/login", userController.loginAdmin);
