@@ -7,47 +7,44 @@ const { generateToken } = require("../helpers/jwt");
 const { encodePassword } = require("../helpers/bcrypt");
 
 const admin = {
-  email: "admin1@gmail.com",
-  password: encodePassword("789456123"),
-  role: "Admin",
-  name: "user1",
-  gender: "Male",
-  avatarUrl:
-    "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-};
+    email: "admin1@gmail.com",
+    password: encodePassword("789456123"),
+    role: "admin",
+    name: "user1",
+    gender: "Male",
+    avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
+}
 const userTest1 = {
-  email: "user1@gmail.com",
-  password: encodePassword("789456123"),
-  role: "Counselor",
-  name: "user1",
-  gender: "Male",
-  avatarUrl:
-    "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-};
+    email: "user1@gmail.com",
+    password: encodePassword("789456123"),
+    role: "counselor",
+    name: "user1",
+    gender: "Male",
+    avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
+}
 
 const userTest2 = {
-  email: "user2@gmail.com",
-  password: encodePassword("789456123"),
-  role: "Counselor",
-  name: "user2",
-  gender: "Female",
-  avatarUrl:
-    "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-};
+    email: "user2@gmail.com",
+    password: encodePassword("789456123"),
+    role: "counselor",
+    name: "user2",
+    gender: "Female",
+    avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
+}
 
 const createTestCase = {
-  email: "testing@gmail.com",
-  password: encodePassword("789456123"),
-  role: "Counselor",
-  name: "testing",
-  gender: "Male",
-  avatarUrl:
-    "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-  motto: "motto",
-  specialist: "specialist",
-  about: "about",
-  price: 200000,
-};
+    email: "testing@gmail.com",
+    password: encodePassword("789456123"),
+    role: "counselor",
+    name: "testing",
+    gender: "Male",
+    avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+    motto: "motto",
+    specialist:"specialist",
+    about:"about",
+    price:200000
+}
+
 
 beforeAll((done) => {
   User.create(admin)
@@ -101,14 +98,13 @@ afterAll((done) => {
     .catch((err) => done(err));
 });
 
-describe("Counserlor Routes Test", () => {
-  const access_token = generateToken({
-    id: 1,
-    email: "admin1@gmail.com",
-    role: "Admin",
-  });
-  const falsyToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCCI6MSwiZW1haWwiOiJhZG1pbjFAZ21haWwuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjM2NjIwODkyfQ.hCoxGBcGWR3b1DiVfTJ9Nz2PpLI3C1D_Sr0jLKlwQPU";
+describe("Counserlor Routes Test", ()=>{
+    const access_token = generateToken({
+        id: 1,
+        email: "admin1@gmail.com",
+        role: "admin"
+    })
+    const falsyToken = "eyJhbGciOiJIUzI1NiIsInR5cCCI6MSwiZW1haWwiOiJhZG1pbjFAZ21haWwuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjM2NjIwODkyfQ.hCoxGBcGWR3b1DiVfTJ9Nz2PpLI3C1D_Sr0jLKlwQPU"
 
   describe("GET /counselors - get all counselor", () => {
     test("200 Success - should get all counselor", (done) => {
@@ -126,6 +122,7 @@ describe("Counserlor Routes Test", () => {
           done(err);
         });
     });
+
 
     test("401 Error - failed to get data with invalid token", (done) => {
       request(app)
@@ -271,199 +268,186 @@ describe("Counserlor Routes Test", () => {
         });
     });
 
-    test("400 Failed create counselor email null", (done) => {
-      request(app)
-        .post("/counselors")
-        .send({
-          password: encodePassword("789456123"),
-          role: "Counselor",
-          name: "testing",
-          gender: "Male",
-          avatarUrl:
-            "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-          motto: "motto",
-          specialist: "specialist",
-          about: "about",
-          price: 200000,
+        test("400 Failed create counselor email null", (done)=>{
+            request(app)
+            .post("/counselors")
+            .send({
+                password: encodePassword("789456123"),
+                role: "counselor",
+                name: "testing",
+                gender: "Male",
+                avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+                motto: "motto",
+                specialist:"specialist",
+                about:"about",
+                price:200000
+            })
+            .set("access_token", access_token)
+            .then((response)=>{
+                const { body, status } = response;
+                expect(status).toBe(400);
+                expect(body).toHaveProperty('message', [ 'Email cannot be null' ])
+                done();
+            })
+            .catch((err)=>{
+                done(err)
+            })
         })
-        .set("access_token", access_token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(400);
-          expect(body).toHaveProperty("message", ["Email cannot be null"]);
-          done();
+        test("400 Failed create counselor email empty", (done)=>{
+            request(app)
+            .post("/counselors")
+            .send({
+                email: "",
+                password: encodePassword("789456123"),
+                role: "counselor",
+                name: "testing",
+                gender: "Male",
+                avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+                motto: "motto",
+                specialist:"specialist",
+                about:"about",
+                price:200000
+            })
+            .set("access_token", access_token)
+            .then((response)=>{
+                const { body, status } = response;
+                expect(status).toBe(400);
+                expect(body).toHaveProperty('message', [ 'Email is required', 'Invalid email format' ])
+                done();
+            })
+            .catch((err)=>{
+                done(err)
+            })
         })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("400 Failed create counselor email empty", (done) => {
-      request(app)
-        .post("/counselors")
-        .send({
-          email: "",
-          password: encodePassword("789456123"),
-          role: "Counselor",
-          name: "testing",
-          gender: "Male",
-          avatarUrl:
-            "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-          motto: "motto",
-          specialist: "specialist",
-          about: "about",
-          price: 200000,
+        test("400 Failed create counselor password null", (done)=>{
+            request(app)
+            .post("/counselors")
+            .send({
+                email: "testing@gmail.com",
+                role: "counselor",
+                name: "testing",
+                gender: "Male",
+                avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+                motto: "motto",
+                specialist:"specialist",
+                about:"about",
+                price:200000
+            })
+            .set("access_token", access_token)
+            .then((response)=>{
+                const { body, status } = response;
+                expect(status).toBe(400);
+                expect(body).toHaveProperty('message', [ 'Password cannot be null' ])
+                done();
+            })
+            .catch((err)=>{
+                done(err)
+            })
         })
-        .set("access_token", access_token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(400);
-          expect(body).toHaveProperty("message", [
-            "Email is required",
-            "Invalid email format",
-          ]);
-          done();
+        test("400 Failed create counselor pasword empty", (done)=>{
+            request(app)
+            .post("/counselors")
+            .send({
+                email: "testing@gmail.com",
+                password: "",
+                role: "counselor",
+                name: "testing",
+                gender: "Male",
+                avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+                motto: "motto",
+                specialist:"specialist",
+                about:"about",
+                price:200000
+            })
+            .set("access_token", access_token)
+            .then((response)=>{
+                const { body, status } = response;
+                expect(status).toBe(400);
+                expect(body).toHaveProperty('message', [ 'Password is required' ])
+                done();
+            })
+            .catch((err)=>{
+                done(err)
+            })
         })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("400 Failed create counselor password null", (done) => {
-      request(app)
-        .post("/counselors")
-        .send({
-          email: "testing@gmail.com",
-          role: "Counselor",
-          name: "testing",
-          gender: "Male",
-          avatarUrl:
-            "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-          motto: "motto",
-          specialist: "specialist",
-          about: "about",
-          price: 200000,
+        test("400 Failed create counselor specialist empty", (done)=>{
+            request(app)
+            .post("/counselors")
+            .send({
+                email: "testing3@gmail.com",
+                password: "789456123",
+                role: "counselor",
+                name: "testing",
+                gender: "Male",
+                avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+                motto: "motto",
+                specialist:"",
+                about:"about",
+                price:200000
+            })
+            .set("access_token", access_token)
+            .then((response)=>{
+                const { body, status } = response;
+                expect(status).toBe(400);
+                expect(body).toHaveProperty('message', [ 'Specialist Cannot be Empty' ])
+                done();
+            })
+            .catch((err)=>{
+                done(err)
+            })
         })
-        .set("access_token", access_token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(400);
-          expect(body).toHaveProperty("message", ["Password cannot be null"]);
-          done();
+        test("400 Failed create counselor about empty", (done)=>{
+            request(app)
+            .post("/counselors")
+            .send({
+                email: "testing1@gmail.com",
+                password: "789456123",
+                role: "counselor",
+                name: "testing",
+                gender: "Male",
+                avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+                motto: "motto",
+                specialist:"specialist",
+                about:"",
+                price:200000
+            })
+            .set("access_token", access_token)
+            .then((response)=>{
+                const { body, status } = response;
+                expect(status).toBe(400);
+                expect(body).toHaveProperty('message', [ 'About Cannot be Empty' ])
+                done();
+            })
+            .catch((err)=>{
+                done(err)
+            })
         })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("400 Failed create counselor pasword empty", (done) => {
-      request(app)
-        .post("/counselors")
-        .send({
-          email: "testing@gmail.com",
-          password: "",
-          role: "Counselor",
-          name: "testing",
-          gender: "Male",
-          avatarUrl:
-            "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-          motto: "motto",
-          specialist: "specialist",
-          about: "about",
-          price: 200000,
-        })
-        .set("access_token", access_token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(400);
-          expect(body).toHaveProperty("message", ["Password is required"]);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("400 Failed create counselor specialist empty", (done) => {
-      request(app)
-        .post("/counselors")
-        .send({
-          email: "testing3@gmail.com",
-          password: "789456123",
-          role: "Counselor",
-          name: "testing",
-          gender: "Male",
-          avatarUrl:
-            "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-          motto: "motto",
-          specialist: "",
-          about: "about",
-          price: 200000,
-        })
-        .set("access_token", access_token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(400);
-          expect(body).toHaveProperty("message", [
-            "Specialist Cannot be Empty",
-          ]);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("400 Failed create counselor about empty", (done) => {
-      request(app)
-        .post("/counselors")
-        .send({
-          email: "testing1@gmail.com",
-          password: "789456123",
-          role: "Counselor",
-          name: "testing",
-          gender: "Male",
-          avatarUrl:
-            "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-          motto: "motto",
-          specialist: "specialist",
-          about: "",
-          price: 200000,
-        })
-        .set("access_token", access_token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(400);
-          expect(body).toHaveProperty("message", ["About Cannot be Empty"]);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("400 Failed create counselor price lower than 100000", (done) => {
-      request(app)
-        .post("/counselors")
-        .send({
-          email: "testing2@gmail.com",
-          password: "789456123",
-          role: "Counselor",
-          name: "testing",
-          gender: "Male",
-          avatarUrl:
-            "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
-          motto: "motto",
-          specialist: "specialist",
-          about: "about",
-          price: 10000,
-        })
-        .set("access_token", access_token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(400);
-          expect(body).toHaveProperty("message", ["Minimum price is 100000"]);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-  });
+        test("400 Failed create counselor price lower than 100000", (done)=>{
+            request(app)
+            .post("/counselors")
+            .send({
+                email: "testing2@gmail.com",
+                password: "789456123",
+                role: "counselor",
+                name: "testing",
+                gender: "Male",
+                avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+                motto: "motto",
+                specialist:"specialist",
+                about:"about",
+                price: 10000
+            })
+            .set("access_token", access_token)
+            .then((response)=>{
+                const { body, status } = response;
+                expect(status).toBe(400);
+                expect(body).toHaveProperty('message', [ 'Minimum price is 100000' ])
+                done();
+            })
+            .catch((err)=>{
+                done(err)
+            })
+
   describe("PUT/counselors/:id - update counselors field", () => {
     test("200 Success update counselors", (done) => {
       request(app)
