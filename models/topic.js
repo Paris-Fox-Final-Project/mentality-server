@@ -16,7 +16,17 @@ module.exports = (sequelize, DataTypes) => {
   Topic.init({
     name: {
       type:DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Topic is required"
+        },
+        notNull: {
+          args: true,
+          msg: "Topic cannot null!"
+        }
+      }
     }
   }, {
     sequelize,
