@@ -6,6 +6,7 @@ const authorization = require("../middlewares/authorization.js");
 const counselingRouter = require("./counselingRouter.js");
 const router = express.Router();
 const counselor = require("./counselorRoute");
+const userRouter = require("./userRouter.js");
 
 router.post("/register", userController.register);
 router.post("/login", userController.login);
@@ -14,6 +15,7 @@ router.post("/admin/login", userController.loginAdmin);
 router.use(authentication);
 router.use("/counseling", counselingRouter);
 router.use("/counselors", counselor);
+router.use("/users", userRouter);
 router.use(errorHandler);
 
 module.exports = router;

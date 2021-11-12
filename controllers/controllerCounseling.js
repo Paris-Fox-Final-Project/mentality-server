@@ -49,7 +49,6 @@ class CounselingController {
 
     try {
       const counseling = await CounselorUser.findByPk(counselingId);
-      console.log(counseling, ">>>>>>>.");
       if (!counseling) {
         throw {
           name: "COUNSELING_NOT_FOUND",
@@ -58,7 +57,7 @@ class CounselingController {
 
       if (!counseling.isPaid) {
         throw {
-          name: "COUNSELING_NOT_START",
+          name: "COUNSELING_NOT_PAID",
         };
       }
 

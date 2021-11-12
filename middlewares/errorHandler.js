@@ -34,6 +34,14 @@ const errorHandler = async (err, req, res, next) => {
     case "COUNSELING_NOT_START":
       res.status(400).json({ message: "Sorry, counseling hasn't started yet" });
       break;
+    case "COUNSELING_NOT_PAID":
+      res
+        .status(400)
+        .json({ message: "Sorry, counseling hasn't not paid yet" });
+      break;
+    case "USER_NOT_FOUND":
+      res.status(404).json({ message: "User not found" });
+      break;
     default:
       res.status(500).json({ message: "Internal Server Error" });
       break;

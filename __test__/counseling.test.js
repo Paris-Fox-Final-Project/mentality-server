@@ -152,24 +152,36 @@ describe("POST /counseling - create counseling schedule", () => {
   });
 });
 
-const dummies = [
-  {
-    CounselorId: 1,
-    transactionAmount: 195000,
-    UserId: 1,
-    schedule: "2021-11-11 21:58:00+07",
-    isPaid: true,
-    totalSession: 1,
-    description: "example of description",
-    TopicId: 1,
-    isDone: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
-
 describe("PATCH /counseling/:conselingId/done", () => {
-  beforeEach((done) => {
+  const dummies = [
+    {
+      CounselorId: 1,
+      transactionAmount: 195000,
+      UserId: 1,
+      schedule: "2021-11-11 15:00:00+07",
+      isPaid: true,
+      totalSession: 1,
+      description: "example of description",
+      TopicId: 1,
+      isDone: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      CounselorId: 1,
+      transactionAmount: 195000,
+      UserId: 1,
+      schedule: "2021-11-15 16:00:00+07",
+      isPaid: true,
+      totalSession: 1,
+      description: "example of description",
+      TopicId: 1,
+      isDone: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
+  beforeAll((done) => {
     queryInterface
       .bulkInsert("CounselorUsers", dummies)
       .then((data) => {
@@ -177,14 +189,14 @@ describe("PATCH /counseling/:conselingId/done", () => {
       })
       .catch((error) => done(error));
   });
-  test("(400 - Bad Request) failed because it's not time", (done) => {
+  test("(400 - Bad Request) failed because counseling not paid", (done) => {
     request(app)
       .patch("/counseling/1/done")
       .set({ access_token: token })
       .then((response) => {
         const { body, status } = response;
         expect(body).toHaveProperty("message");
-        expect(body.message).toBe("Sorry, counseling hasn't started yet");
+        expect(body.message).toBe("Sorry, counseling hasn't not paid yet");
         expect(status).toBe(400);
         done();
       });
@@ -195,8 +207,26 @@ describe("PATCH /counseling/:conselingId/done", () => {
       .set({ access_token: token })
       .then((response) => {
         const { body, status } = response;
-        console.log(body, ">>>> body");
         expect(status).toBe(200);
+        expect(body).toEqual(expect.any(Object));
+        expect(body).toHaveProperty("counseling");
+        expect(body.counseling).toHaveProperty("id");
+        expect(body.counseling).toHaveProperty("isDone");
+        expect(body.counseling.isDone).toBe(true);
+        done();
+      })
+      .catch((error) => done(error));
+  });
+  test("(400-Bad Request) failed because it's not time", (done) => {
+    request(app)
+      .patch("/counseling/3/done")
+      .set({ access_token: token })
+      .then((response) => {
+        const { body, status } = response;
+        expect(body).toEqual(expect.any(Object));
+        expect(body).toHaveProperty("message");
+        expect(body.message).toBe("Sorry, counseling hasn't started yet");
+        expect(status).toBe(400);
         done();
       })
       .catch((error) => done(error));
