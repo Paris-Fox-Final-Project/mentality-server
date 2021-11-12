@@ -1,55 +1,55 @@
-const { User } = require('../models/index.js')
-const { decodePassword } = require('../helpers/bcrypt.js')
-const { generateToken } = require('../helpers/jwt.js')
+const { User } = require("../models/index.js");
+const { decodePassword } = require("../helpers/bcrypt.js");
+const { generateToken } = require("../helpers/jwt.js");
 
 class UserController {
-  static async register (req, res, next) {
+  static async register(req, res, next) {
     try {
       const dataUser = {
         email: req.body.email,
         password: req.body.password,
-        role: 'user',
+        role: "user",
         name: req.body.name,
         gender: req.body.gender,
-        avatarUrl: req.body.avatarUrl
-      }
+        avatarUrl: req.body.avatarUrl,
+      };
 
-      const newUser = await User.create(dataUser)
-      res.status(201).json({ 
-        id: newUser.id, 
-        email: newUser.email 
-      })
+      const newUser = await User.create(dataUser);
+      res.status(201).json({
+        id: newUser.id,
+        email: newUser.email,
+      });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
-  
-  static async login (req, res, next) {
-    try {
-      const { email, password } = req.body
 
-      const selectedUser = await User.findOne({ where: { email }})
+  static async login(req, res, next) {
+    try {
+      const { email, password } = req.body;
+
+      const selectedUser = await User.findOne({ where: { email } });
       if (selectedUser) {
-        const isUserPassExist = decodePassword(password, selectedUser.password)
+        const isUserPassExist = decodePassword(password, selectedUser.password);
         if (isUserPassExist) {
-          const access_token = generateToken({ 
-            id: selectedUser.id, 
-            email: selectedUser.email, 
-            role: selectedUser.role 
-          })
-          res.status(200).json({ access_token })
+          const access_token = generateToken({
+            id: selectedUser.id,
+            email: selectedUser.email,
+            role: selectedUser.role,
+          });
+          res.status(200).json({ access_token });
         } else {
-          throw { name: 'UNAUTHORIZED_LOGIN' }
+          throw { name: "UNAUTHORIZED_LOGIN" };
         }
       } else {
-        throw { name: 'UNAUTHORIZED_LOGIN' }
+        throw { name: "UNAUTHORIZED_LOGIN" };
       }
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
-  
-  static async registerAdmin (req, res, next) {
+
+  static async registerAdmin(req, res, next) {
     try {
       const dataAdmin = {
         email: req.body.email,
@@ -57,47 +57,72 @@ class UserController {
         role: "admin",
         name: req.body.name,
         gender: req.body.gender,
-        avatarUrl: req.body.avatarUrl
-      }
+        avatarUrl: req.body.avatarUrl,
+      };
 
-      const newAdmin = await User.create(dataAdmin)
-      res.status(201).json({ 
-        id: newAdmin.id, 
-        email: newAdmin.email 
-      })
+      const newAdmin = await User.create(dataAdmin);
+      res.status(201).json({
+        id: newAdmin.id,
+        email: newAdmin.email,
+      });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
-  
-  static async loginAdmin (req, res, next) {
-    try {
-      const { email, password } = req.body
 
-      const selectedAdmin = await User.findOne({ where: { email }})
+  static async loginAdmin(req, res, next) {
+    try {
+      const { email, password } = req.body;
+
+      const selectedAdmin = await User.findOne({ where: { email } });
       if (selectedAdmin) {
         if (selectedAdmin.role === "admin") {
-          const isAdminPassExist = decodePassword(password, selectedAdmin.password)
+          const isAdminPassExist = decodePassword(
+            password,
+            selectedAdmin.password
+          );
           if (isAdminPassExist) {
-            const access_token = generateToken({ 
-              id: selectedAdmin.id, 
-              email: selectedAdmin.email, 
-              role: selectedAdmin.role 
-            })
-          res.status(200).json({ access_token })
+            const access_token = generateToken({
+              id: selectedAdmin.id,
+              email: selectedAdmin.email,
+              role: selectedAdmin.role,
+            });
+            res.status(200).json({ access_token });
           } else {
-            throw { name: 'UNAUTHORIZED_LOGIN' }
+            throw { name: "UNAUTHORIZED_LOGIN" };
           }
         } else {
-          throw { name: 'UNAUTHORIZED_ROLE' }
+          throw { name: "UNAUTHORIZED_ROLE" };
         }
       } else {
-        throw { name: 'UNAUTHORIZED_LOGIN' }
+        throw { name: "UNAUTHORIZED_LOGIN" };
       }
     } catch (err) {
-      next(err)
+      next(err);
+    }
+  }
+
+  static async getUserById(req, res, next) {
+    const { userId } = req.params;
+    try {
+      const user = await User.findByPk(userId, {
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "password"],
+        },
+      });
+
+      if (!user) {
+        throw {
+          name: "USER_NOT_FOUND",
+        };
+      }
+      res.status(200).json({
+        user: user,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }
 
-module.exports = UserController
+module.exports = UserController;
