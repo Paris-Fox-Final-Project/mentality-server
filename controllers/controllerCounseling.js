@@ -21,7 +21,6 @@ class CounselingController {
           name: "COUNSELOR_NOT_FOUND",
         };
       }
-
       const transactionAmount = counselor.price * Number(totalSession);
       const counseling = await CounselorUser.create({
         TopicId,
