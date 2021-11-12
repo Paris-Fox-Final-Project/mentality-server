@@ -1,6 +1,5 @@
 'use strict';
 const fs = require("fs")
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     /**
@@ -12,12 +11,12 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-     const readJson = JSON.parse(fs.readFileSync("./data/counselor.json", "utf-8"))
+     const readJson = JSON.parse(fs.readFileSync("./data/counselorUser.json", "utf-8"))
      readJson.forEach(el => {
        el.createdAt = new Date()
        el.updatedAt = new Date()
      });
-     await queryInterface.bulkInsert('Counselors', readJson);
+     await queryInterface.bulkInsert('CounselorUsers', readJson);
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -27,6 +26,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-     await queryInterface.bulkDelete('Counselors', null, {});
+     await queryInterface.bulkDelete('CounselorUsers', null, {});
   }
 };
