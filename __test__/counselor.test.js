@@ -9,7 +9,7 @@ const {encodePassword} = require("../helpers/bcrypt")
 const admin = {
     email: "admin1@gmail.com",
     password: encodePassword("789456123"),
-    role: "Admin",
+    role: "admin",
     name: "user1",
     gender: "Male",
     avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
@@ -17,7 +17,7 @@ const admin = {
 const userTest1 = {
     email: "user1@gmail.com",
     password: encodePassword("789456123"),
-    role: "Counselor",
+    role: "counselor",
     name: "user1",
     gender: "Male",
     avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
@@ -26,7 +26,7 @@ const userTest1 = {
 const userTest2 = {
     email: "user2@gmail.com",
     password: encodePassword("789456123"),
-    role: "Counselor",
+    role: "counselor",
     name: "user2",
     gender: "Female",
     avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80"
@@ -35,7 +35,7 @@ const userTest2 = {
 const createTestCase = {
     email: "testing@gmail.com",
     password: encodePassword("789456123"),
-    role: "Counselor",
+    role: "counselor",
     name: "testing",
     gender: "Male",
     avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
@@ -93,7 +93,7 @@ describe("Counserlor Routes Test", ()=>{
     const access_token = generateToken({
         id: 1,
         email: "admin1@gmail.com",
-        role: "Admin"
+        role: "admin"
     })
     const falsyToken = "eyJhbGciOiJIUzI1NiIsInR5cCCI6MSwiZW1haWwiOiJhZG1pbjFAZ21haWwuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjM2NjIwODkyfQ.hCoxGBcGWR3b1DiVfTJ9Nz2PpLI3C1D_Sr0jLKlwQPU"
 
@@ -263,7 +263,7 @@ describe("Counserlor Routes Test", ()=>{
             .post("/counselors")
             .send({
                 password: encodePassword("789456123"),
-                role: "Counselor",
+                role: "counselor",
                 name: "testing",
                 gender: "Male",
                 avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
@@ -289,7 +289,7 @@ describe("Counserlor Routes Test", ()=>{
             .send({
                 email: "",
                 password: encodePassword("789456123"),
-                role: "Counselor",
+                role: "counselor",
                 name: "testing",
                 gender: "Male",
                 avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
@@ -314,7 +314,7 @@ describe("Counserlor Routes Test", ()=>{
             .post("/counselors")
             .send({
                 email: "testing@gmail.com",
-                role: "Counselor",
+                role: "counselor",
                 name: "testing",
                 gender: "Male",
                 avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
@@ -340,7 +340,7 @@ describe("Counserlor Routes Test", ()=>{
             .send({
                 email: "testing@gmail.com",
                 password: "",
-                role: "Counselor",
+                role: "counselor",
                 name: "testing",
                 gender: "Male",
                 avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
@@ -366,7 +366,7 @@ describe("Counserlor Routes Test", ()=>{
             .send({
                 email: "testing3@gmail.com",
                 password: "789456123",
-                role: "Counselor",
+                role: "counselor",
                 name: "testing",
                 gender: "Male",
                 avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
@@ -392,7 +392,7 @@ describe("Counserlor Routes Test", ()=>{
             .send({
                 email: "testing1@gmail.com",
                 password: "789456123",
-                role: "Counselor",
+                role: "counselor",
                 name: "testing",
                 gender: "Male",
                 avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
@@ -418,7 +418,7 @@ describe("Counserlor Routes Test", ()=>{
             .send({
                 email: "testing2@gmail.com",
                 password: "789456123",
-                role: "Counselor",
+                role: "counselor",
                 name: "testing",
                 gender: "Male",
                 avatarUrl: "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",

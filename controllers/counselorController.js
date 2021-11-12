@@ -48,7 +48,7 @@ class CounselorController{
             const createdUserCounselor = await User.create({
                 email:email,
                 password:password,
-                role: "Counselor",
+                role: "counselor",
                 name: name,
                 gender: gender,
                 avatarUrl: avatarUrl
