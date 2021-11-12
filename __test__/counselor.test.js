@@ -1,10 +1,10 @@
 const app = require("../app");
 const request = require("supertest");
-const {sequelize} = require("../models");
+const { sequelize } = require("../models");
 const { queryInterface } = sequelize;
-const {Counselor,User} = require("../models");
-const {generateToken} = require("../helpers/jwt")
-const {encodePassword} = require("../helpers/bcrypt")
+const { Counselor, User } = require("../models");
+const { generateToken } = require("../helpers/jwt");
+const { encodePassword } = require("../helpers/bcrypt");
 
 const admin = {
     email: "admin1@gmail.com",
@@ -45,49 +45,58 @@ const createTestCase = {
     price:200000
 }
 
+
 beforeAll((done) => {
-    User.create(admin)
-    .then(()=>{
-        return User.create(userTest1)
+  User.create(admin)
+    .then(() => {
+      return User.create(userTest1);
     })
-    .then((register1)=>{
-        return Counselor.create({
-            UserId: register1.dataValues.id,
-            motto: "motto",
-            specialist:"specialist",
-            about:"about",
-            price:200000
-        })
+    .then((register1) => {
+      return Counselor.create({
+        UserId: register1.dataValues.id,
+        motto: "motto",
+        specialist: "specialist",
+        about: "about",
+        price: 200000,
+      });
     })
-    .then(()=>{
-        return User.create(userTest2)
+    .then(() => {
+      return User.create(userTest2);
     })
-    .then((register2)=>{
-        return Counselor.create({
-            UserId: register2.dataValues.id,
-            motto: "motto",
-            specialist:"specialist",
-            about:"about",
-            price:250000
-        })
+    .then((register2) => {
+      return Counselor.create({
+        UserId: register2.dataValues.id,
+        motto: "motto",
+        specialist: "specialist",
+        about: "about",
+        price: 250000,
+      });
     })
-    .then(()=>{
-        done()
+    .then(() => {
+      done();
     })
-    .catch((err)=>{
-        done(err)
-    })
+    .catch((err) => {
+      done(err);
+    });
 });
 
 afterAll((done) => {
-    queryInterface.bulkDelete('Users', {},{ truncate: true, cascade: true, restartIdentity: true })
-        .then(() => {
-            return queryInterface.bulkDelete('Counselors', {},{ truncate: true, cascade: true, restartIdentity: true });
-        })
-        .then(() => done())
-        .catch((err) => done(err));
+  queryInterface
+    .bulkDelete(
+      "Users",
+      {},
+      { truncate: true, cascade: true, restartIdentity: true }
+    )
+    .then(() => {
+      return queryInterface.bulkDelete(
+        "Counselors",
+        {},
+        { truncate: true, cascade: true, restartIdentity: true }
+      );
+    })
+    .then(() => done())
+    .catch((err) => done(err));
 });
-
 
 describe("Counserlor Routes Test", ()=>{
     const access_token = generateToken({
@@ -97,166 +106,167 @@ describe("Counserlor Routes Test", ()=>{
     })
     const falsyToken = "eyJhbGciOiJIUzI1NiIsInR5cCCI6MSwiZW1haWwiOiJhZG1pbjFAZ21haWwuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjM2NjIwODkyfQ.hCoxGBcGWR3b1DiVfTJ9Nz2PpLI3C1D_Sr0jLKlwQPU"
 
-    describe("GET /counselors - get all counselor",  ()=>{
-        test("200 Success - should get all counselor", (done)=>{
-            request(app)
-            .get("/counselors")
-            .set("access_token", access_token)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(200);
-                expect(Array.isArray(body)).toBeTruthy();
-                expect(body.length).toBeGreaterThan(0);
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
+  describe("GET /counselors - get all counselor", () => {
+    test("200 Success - should get all counselor", (done) => {
+      request(app)
+        .get("/counselors")
+        .set("access_token", access_token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(200);
+          expect(Array.isArray(body)).toBeTruthy();
+          expect(body.length).toBeGreaterThan(0);
+          done();
         })
-        
-        test("401 Error - failed to get data with invalid token", (done)=>{
-            request(app)
-            .get("/counselors")
-            .set("access_token", falsyToken)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(401);
-                expect(body).toHaveProperty("message", "Invalid Access Token");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
-        })
-        test("401 Error - failed to get data without token", (done)=>{
-            request(app)
-            .get("/counselors")
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(401);
-                expect(body).toHaveProperty("message", "Access Token is Required");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
-        })
-    })
-    describe("GET /counselor/:id - get counselor by id",  ()=>{
-        test("200 Success - should get one matching counselor", (done)=>{
-            request(app)
-            .get(`/counselors/${1}`)
-            .set("access_token", access_token)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(200);
-                expect(body).toHaveProperty("id", expect.any(Number));
-                expect(body).toHaveProperty("UserId", body.UserId);
-                expect(body.UserId).toBe(body.User.id)
-                expect(body).toHaveProperty("motto");
-                expect(body).toHaveProperty("about");
-                expect(body).toHaveProperty("price", expect.any(Number));
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
-        })
+        .catch((err) => {
+          done(err);
+        });
+    });
 
-        test("401 Error - failed to get data with invalid token", (done)=>{
-            request(app)
-            .get(`/counselors/${1}`)
-            .set("access_token", falsyToken)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(401);
-                expect(body).toHaveProperty("message", "Invalid Access Token");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
-        })
-        test("401 Error - failed to get data without token", (done)=>{
-            request(app)
-            .get(`/counselors/${1}`)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(401);
-                expect(body).toHaveProperty("message", "Access Token is Required");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
-        })
-        test("401 Error - failed to get data counselor not found", (done)=>{
-            request(app)
-            .get(`/counselors/${99}`)
-            .set("access_token", access_token)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(404);
-                expect(body).toHaveProperty("message", "Counselor not found!");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
-        })
-    })
-    describe("POST /counselor - create new counselor",  ()=>{
-        test("201 Success create counselor", (done)=>{
-            request(app)
-            .post("/counselors")
-            .send(createTestCase)
-            .set("access_token", access_token)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(201);
-                expect(body.counselor).toHaveProperty("id", expect.any(Number));
-                expect(body.counselor).toHaveProperty("email");
-                expect(body.counselor).toHaveProperty("role");
-                expect(body.counselor).toHaveProperty("name");
-                expect(body.counselor).toHaveProperty("gender");
-                expect(body.counselor).toHaveProperty("about");
-                expect(body.counselor).toHaveProperty("price", expect.any(Number));
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
-        })
 
-        test("401 Failed create counselor invalid token", (done)=>{
-            request(app)
-            .post("/counselors")
-            .send(createTestCase)
-            .set("access_token", falsyToken)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(401);
-                expect(body).toHaveProperty("message", "Invalid Access Token");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
+    test("401 Error - failed to get data with invalid token", (done) => {
+      request(app)
+        .get("/counselors")
+        .set("access_token", falsyToken)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", "Invalid Access Token");
+          done();
         })
-        test("401 Failed create counselor without token", (done)=>{
-            request(app)
-            .post("/counselors")
-            .send(createTestCase)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(401);
-                expect(body).toHaveProperty("message", "Access Token is Required");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test("401 Error - failed to get data without token", (done) => {
+      request(app)
+        .get("/counselors")
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", "Access Token is Required");
+          done();
         })
+        .catch((err) => {
+          done(err);
+        });
+    });
+  });
+  describe("GET /counselor/:id - get counselor by id", () => {
+    test("200 Success - should get one matching counselor", (done) => {
+      request(app)
+        .get(`/counselors/${1}`)
+        .set("access_token", access_token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(200);
+          expect(body).toHaveProperty("id", expect.any(Number));
+          expect(body).toHaveProperty("UserId", body.UserId);
+          expect(body.UserId).toBe(body.User.id);
+          expect(body).toHaveProperty("motto");
+          expect(body).toHaveProperty("about");
+          expect(body).toHaveProperty("price", expect.any(Number));
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    test("401 Error - failed to get data with invalid token", (done) => {
+      request(app)
+        .get(`/counselors/${1}`)
+        .set("access_token", falsyToken)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", "Invalid Access Token");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test("401 Error - failed to get data without token", (done) => {
+      request(app)
+        .get(`/counselors/${1}`)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", "Access Token is Required");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test("401 Error - failed to get data counselor not found", (done) => {
+      request(app)
+        .get(`/counselors/${99}`)
+        .set("access_token", access_token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(404);
+          expect(body).toHaveProperty("message", "Counselor not found!");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+  });
+  describe("POST /counselor - create new counselor", () => {
+    test("201 Success create counselor", (done) => {
+      request(app)
+        .post("/counselors")
+        .send(createTestCase)
+        .set("access_token", access_token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(201);
+          expect(body.counselor).toHaveProperty("id", expect.any(Number));
+          expect(body.counselor).toHaveProperty("email");
+          expect(body.counselor).toHaveProperty("role");
+          expect(body.counselor).toHaveProperty("name");
+          expect(body.counselor).toHaveProperty("gender");
+          expect(body.counselor).toHaveProperty("about");
+          expect(body.counselor).toHaveProperty("price", expect.any(Number));
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    test("401 Failed create counselor invalid token", (done) => {
+      request(app)
+        .post("/counselors")
+        .send(createTestCase)
+        .set("access_token", falsyToken)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", "Invalid Access Token");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test("401 Failed create counselor without token", (done) => {
+      request(app)
+        .post("/counselors")
+        .send(createTestCase)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", "Access Token is Required");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
 
         test("400 Failed create counselor email null", (done)=>{
             request(app)
@@ -437,128 +447,129 @@ describe("Counserlor Routes Test", ()=>{
             .catch((err)=>{
                 done(err)
             })
-        })
-    })
-    describe("PUT/counselors/:id - update counselors field",  ()=>{
-        test("200 Success update counselors", (done)=>{
-            request(app)
-            .put(`/counselors/${1}`)
-            .send({
-                motto: "motto 126",
-                specialist:"specialist 123",
-                about:"about 123",
-                price:200000
-            })
-            .set("access_token", access_token)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(200);
-                expect(body).toHaveProperty("message", "Counselor Updated");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
-        })
 
-        test("401 Failed update counselors invalid token", (done)=>{
-            request(app)
-            .post(`/counselors/${1}`)
-            .send({
-                motto: "motto 126",
-                specialist:"specialist 123",
-                about:"about 123",
-                price:200000
-            })
-            .set("access_token", falsyToken)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(401);
-                expect(body).toHaveProperty("message", "Invalid Access Token");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
+  describe("PUT/counselors/:id - update counselors field", () => {
+    test("200 Success update counselors", (done) => {
+      request(app)
+        .put(`/counselors/${1}`)
+        .send({
+          motto: "motto 126",
+          specialist: "specialist 123",
+          about: "about 123",
+          price: 200000,
         })
-        test("401 Failed update counselor without token", (done)=>{
-            request(app)
-            .post(`/counselors/${1}`)
-            .send({
-                motto: "motto 126",
-                specialist:"specialist 123",
-                about:"about 123",
-                price:200000
-            })
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(401);
-                expect(body).toHaveProperty("message", "Access Token is Required");
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
+        .set("access_token", access_token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(200);
+          expect(body).toHaveProperty("message", "Counselor Updated");
+          done();
         })
-        test("400 Failed update counselors specialist empty", (done)=>{
-            request(app)
-            .put(`/counselors/${1}`)
-            .send({
-                motto: "motto 126",
-                specialist:"",
-                about:"about 123",
-                price:200000
-            })
-            .set("access_token", access_token)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(400);
-                expect(body).toHaveProperty('message', [ 'Specialist Cannot be Empty' ])
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    test("401 Failed update counselors invalid token", (done) => {
+      request(app)
+        .post(`/counselors/${1}`)
+        .send({
+          motto: "motto 126",
+          specialist: "specialist 123",
+          about: "about 123",
+          price: 200000,
         })
-        test("400 Failed create counselors about empty", (done)=>{
-            request(app)
-            .put(`/counselors/${1}`)
-            .send({
-                motto: "motto",
-                specialist:"specialist",
-                about:"",
-                price:200000
-            })
-            .set("access_token", access_token)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(400);
-                expect(body).toHaveProperty('message', [ 'About Cannot be Empty' ])
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
+        .set("access_token", falsyToken)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", "Invalid Access Token");
+          done();
         })
-        test("400 Failed create counselors price lower than 100000", (done)=>{
-            request(app)
-            .put(`/counselors/${1}`)
-            .send({
-                motto: "motto",
-                specialist:"specialist",
-                about:"about",
-                price: 10000
-            })
-            .set("access_token", access_token)
-            .then((response)=>{
-                const { body, status } = response;
-                expect(status).toBe(400);
-                expect(body).toHaveProperty('message', [ 'Minimum price is 100000' ])
-                done();
-            })
-            .catch((err)=>{
-                done(err)
-            })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test("401 Failed update counselor without token", (done) => {
+      request(app)
+        .post(`/counselors/${1}`)
+        .send({
+          motto: "motto 126",
+          specialist: "specialist 123",
+          about: "about 123",
+          price: 200000,
         })
-    })
-})
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(401);
+          expect(body).toHaveProperty("message", "Access Token is Required");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test("400 Failed update counselors specialist empty", (done) => {
+      request(app)
+        .put(`/counselors/${1}`)
+        .send({
+          motto: "motto 126",
+          specialist: "",
+          about: "about 123",
+          price: 200000,
+        })
+        .set("access_token", access_token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(400);
+          expect(body).toHaveProperty("message", [
+            "Specialist Cannot be Empty",
+          ]);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test("400 Failed create counselors about empty", (done) => {
+      request(app)
+        .put(`/counselors/${1}`)
+        .send({
+          motto: "motto",
+          specialist: "specialist",
+          about: "",
+          price: 200000,
+        })
+        .set("access_token", access_token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(400);
+          expect(body).toHaveProperty("message", ["About Cannot be Empty"]);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test("400 Failed create counselors price lower than 100000", (done) => {
+      request(app)
+        .put(`/counselors/${1}`)
+        .send({
+          motto: "motto",
+          specialist: "specialist",
+          about: "about",
+          price: 10000,
+        })
+        .set("access_token", access_token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(400);
+          expect(body).toHaveProperty("message", ["Minimum price is 100000"]);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+  });
+});
