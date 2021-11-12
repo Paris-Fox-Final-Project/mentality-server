@@ -83,7 +83,6 @@ describe("POST /counseling - create counseling schedule", () => {
         const { body } = response;
         expect(body).toHaveProperty("counseling");
         expect(body.counseling).toEqual(expect.any(Object));
-
         const { counseling } = body;
         expect(counseling).toHaveProperty("id");
         expect(counseling.id).toBe(1);
@@ -102,6 +101,8 @@ describe("POST /counseling - create counseling schedule", () => {
         const { Counselor } = counseling;
         expect(Counselor).toHaveProperty("User");
         expect(Counselor.User.name).toBe("Vivi");
+
+        expect(counseling).toHaveProperty("transaction");
         done();
       })
       .catch((error) => done(error));

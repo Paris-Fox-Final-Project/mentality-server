@@ -1,10 +1,11 @@
 const { CounselorUser, Counselor, User } = require("../models");
 const moment = require("moment");
+const createMidtransTransaction = require("../helpers/midtrans");
 class CounselingController {
   static async createCounseling(req, res, next) {
     const { CounselorId, TopicId, description, schedule, totalSession } =
       req.body;
-    const { id: UserId } = req.user;
+    const { id: UserId, email: userEmail, name: userName } = req.user;
     try {
       const counselor = await Counselor.findByPk(CounselorId, {
         include: [
@@ -16,6 +17,7 @@ class CounselingController {
           },
         ],
       });
+
       if (!counselor) {
         throw {
           name: "COUNSELOR_NOT_FOUND",
@@ -32,10 +34,28 @@ class CounselingController {
         transactionAmount,
       });
 
+      const orderId = `counseling-${UserId}-${counseling.id}`;
+      const parameter = {
+        transaction_details: {
+          order_id: orderId,
+          gross_amount: counseling.transactionAmount,
+        },
+        credit_card: {
+          secure: true,
+        },
+        customer_details: {
+          first_name: userName,
+          email: userEmail,
+        },
+      };
+
+      const transaction = await createMidtransTransaction(parameter);
+
       res.status(201).json({
         counseling: {
           ...counseling.toJSON(),
           Counselor: { ...counselor.toJSON() },
+          transaction,
         },
       });
     } catch (error) {
