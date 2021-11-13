@@ -78,6 +78,22 @@ class CounselingController {
       next(error);
     }
   }
+
+  static async getAllCounselorCounselingList(req,res,next){
+    try {
+      const { counselorId } = req.params;
+      const counselingLists = await CounselorUser.findAll({
+        where:{
+          CounselorId: counselorId
+        }
+      })
+      res.status(200).json(counselingLists)
+    } catch (err) {
+      console.log(err, 'get all counselor counseling liset')
+      next(err)
+    }
+  }
+  // disini
 }
 
 module.exports = CounselingController;
