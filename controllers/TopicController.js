@@ -3,10 +3,10 @@ const { Topic } = require("../models");
 class TopicController {
   static async getItem(req, res, next) {
     try {
-      const dataItem = await Topic.findAll({
+      const topics = await Topic.findAll({
         order: [["id", "ASC"]],
       });
-      res.status(200).json(dataItem);
+      res.status(200).json({ topics: topics });
     } catch (error) {
       next(error);
     }
@@ -17,9 +17,9 @@ class TopicController {
       const { id } = req.params;
       const dataItem = await Topic.findByPk(id);
       if (dataItem) {
-        res.status(200).json(dataItem);
+        res.status(200).json({ topic: dataItem });
       } else {
-        next({ name: "NotFound" });
+        throw { name: "TOPIC_NOT_FOUND" };
       }
     } catch (error) {
       next(error);
@@ -32,10 +32,8 @@ class TopicController {
       const createData = await Topic.create({
         name,
       });
-      console.log(createData, ">>> topics");
-      res.status(201).json(createData);
+      res.status(201).json({ topic: createData });
     } catch (error) {
-      console.log(error, " error ");
       next(error);
     }
   }
@@ -60,17 +58,12 @@ class TopicController {
           }
         );
 
-        if (updateTopic) {
-          res.status(200).json(updateTopic[1][0]);
-        } else {
-          next({
-            name: "SequelizeValidationError",
-          });
-        }
+        const topic = updateTopic[1][0];
+        res.status(200).json({ topic: topic });
       } else {
-        next({
-          name: "NotFound",
-        });
+        throw {
+          name: "TOPIC_NOT_FOUND",
+        };
       }
     } catch (error) {
       next(error);
@@ -96,8 +89,7 @@ class TopicController {
         }
       } else {
         next({
-          name: "InvalidRequest",
-          message: "Invalid data to delete",
+          name: "TOPIC_NOT_FOUND",
         });
       }
     } catch (error) {

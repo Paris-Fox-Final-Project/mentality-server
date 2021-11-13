@@ -16,6 +16,7 @@ router.post(
   avatarStorage,
   userController.register
 );
+
 router.post("/login", userController.login);
 router.post("/admin/register", userController.registerAdmin);
 router.post("/admin/login", userController.loginAdmin);
@@ -27,7 +28,7 @@ router.use(authentication);
 router.use("/counseling", counselingRouter);
 router.use("/counselors", counselor);
 router.use("/users", userRouter);
-router.use(topicRouter);
+router.use("/topics", topicRouter);
 router.use(errorHandler);
 
 module.exports = router;
