@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      CounselorUser.belongsTo(models.User)
     }
   }
   CounselorUser.init(
@@ -49,6 +50,9 @@ module.exports = (sequelize, DataTypes) => {
             msg: "Total session must be greater then 0",
           },
         },
+      },
+      orderId: {
+        type: DataTypes.STRING,
       },
     },
     {

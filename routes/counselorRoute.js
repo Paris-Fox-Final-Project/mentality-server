@@ -1,14 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const CounselorController = require("../controllers/counselorController")
-const authorization = require("../middlewares/authorization")
+const CounselorController = require("../controllers/counselorController");
+const authorization = require("../middlewares/authorization");
+const { avatarStorage } = require("../middlewares/aws");
+const { uploadAvatar } = require("../middlewares/multer");
 
-router.get('/', CounselorController.getCounselor)
+router.get("/", CounselorController.getCounselor);
 
-router.get('/:id', CounselorController.getCounselorById)
+router.get("/:id", CounselorController.getCounselorById);
 
-router.post('/', authorization,CounselorController.createCounselor)
+router.use(authorization)
+router.post(
+  "/",
+  uploadAvatar.single("avatar_url"),
+  avatarStorage,
+  CounselorController.createCounselor
+);
 
-router.put('/:id', authorization,CounselorController.updateCounselor)
+router.put("/:id", CounselorController.updateCounselor);
 
 module.exports = router;

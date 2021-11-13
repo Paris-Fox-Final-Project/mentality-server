@@ -1,0 +1,16 @@
+[
+      {
+        "UserId": 4,
+        "motto": "motto",
+        "specialist": "specialist kesehatan mental",
+        "about": "about",
+        "price": 200000
+      },
+      {
+        "UserId": 5,
+        "motto": "motto",
+        "specialist": "specialist kesehatan jiwa",
+        "about": "about",
+        "price": 150000
+      }
+]

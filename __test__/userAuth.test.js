@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../app.js");
 const { generateToken } = require("../helpers/jwt.js");
-const { sequelize } = require("../models");
+const { sequelize, User } = require("../models");
 const { queryInterface } = sequelize;
 
 const userRegister = {
@@ -9,7 +9,6 @@ const userRegister = {
   password: "usertest",
   name: "user test",
   gender: "user gender",
-  avatarUrl: "user image",
 };
 
 afterAll((done) => {
@@ -271,6 +270,51 @@ describe("User Routes Test", () => {
     test("(404 - NOT FOUND) Response should be return message", (done) => {
       request(app)
         .get("/users/99")
+        .set({ access_token: token })
+        .then((response) => {
+          const { body, status } = response;
+          expect(body).toHaveProperty("message");
+          expect(status).toBe(404);
+          done();
+        })
+        .catch((error) => done(error));
+    });
+  });
+
+  describe("PUT /users/:userId", () => {
+    test("(200 - OK) Response should have the correct property and value", (done) => {
+      const payload = {
+        name: "John Doe",
+        email: "usertest@gmail.com",
+        gender: "L",
+      };
+      request(app)
+        .put("/users/1")
+        .send(payload)
+        .set({
+          access_token: token,
+        })
+        .then((response) => {
+          const { body, status } = response;
+          expect(body).toHaveProperty("user");
+          expect(body.user).toEqual(expect.any(Object));
+          expect(status).toBe(200);
+
+          const { user } = body;
+          expect(user).toHaveProperty("name");
+          expect(user).toHaveProperty("id");
+          expect(user).toHaveProperty("email");
+          expect(user).toHaveProperty("gender");
+          expect(user.id).toBe(1);
+          expect(user.name).toBe(payload.name);
+          expect(user.gender).toBe(payload.gender);
+          done();
+        })
+        .catch((error) => done(error));
+    });
+    test("(404 - NOT FOUND) Response should be return message", (done) => {
+      request(app)
+        .put("/users/99")
         .set({ access_token: token })
         .then((response) => {
           const { body, status } = response;
