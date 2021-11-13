@@ -10,9 +10,5 @@ counselingRouter.patch(
 counselingRouter.get("/:counselingId", CounselingController.getCounselingDetail)
 counselingRouter.get("/counselor/:counselorId", CounselingController.getAllCounselorCounselingList)
 counselingRouter.get("/user/:userId", CounselingController.getAllUserCounselingList)
-//disini
-// GET /counseling/counselor/:counselorId => Dapatkan seluruh list counseling dari seorang counselor by counselorId
-// GET /counseling/:counselingId => Dapatkan detail conseling
-// GET /counseling/user/:userId => Dapatkan seluruh list counseling dari seorang patient by userId 
 
 module.exports = counselingRouter;

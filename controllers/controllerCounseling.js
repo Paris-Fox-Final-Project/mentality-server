@@ -112,7 +112,6 @@ class CounselingController {
   static async getCounselingDetail(req,res,next){
     try {
       const { counselingId } = req.params;
-      console.log('masuk sini')
       const counselingDetail = await CounselorUser.findByPk(counselingId,{
         include: {
           model: User,
@@ -129,7 +128,6 @@ class CounselingController {
       next(err)
     }
   }
-  // disini
 }
 
 module.exports = CounselingController;
