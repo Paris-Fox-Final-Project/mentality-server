@@ -50,6 +50,9 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+      orderId: {
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,

@@ -1,5 +1,6 @@
-const { CounselorUser, Counselor, User } = require("../models");
-const moment = require("moment");
+const { CounselorUser, Counselor, User, sequelize } = require("../models");
+const sha512 = require("js-sha512");
+const { nanoid } = require("nanoid");
 const createMidtransTransaction = require("../helpers/midtrans");
 class CounselingController {
   static async createCounseling(req, res, next) {
@@ -23,7 +24,10 @@ class CounselingController {
           name: "COUNSELOR_NOT_FOUND",
         };
       }
+
       const transactionAmount = counselor.price * Number(totalSession);
+      const orderId = nanoid();
+      console.log(orderId, ">>>>>> order id");
       const counseling = await CounselorUser.create({
         TopicId,
         description,
@@ -32,9 +36,9 @@ class CounselingController {
         CounselorId,
         totalSession,
         transactionAmount,
+        orderId,
       });
 
-      const orderId = `counseling-${UserId}-${counseling.id}`;
       const parameter = {
         transaction_details: {
           order_id: orderId,
@@ -50,12 +54,14 @@ class CounselingController {
       };
 
       const transaction = await createMidtransTransaction(parameter);
-
       res.status(201).json({
         counseling: {
           ...counseling.toJSON(),
           Counselor: { ...counselor.toJSON() },
-          transaction,
+          transaction: {
+            ...transaction,
+            orderId: orderId,
+          },
         },
       });
     } catch (error) {
@@ -95,6 +101,47 @@ class CounselingController {
         counseling: counselingUpdated,
       });
     } catch (error) {
+      next(error);
+    }
+  }
+
+  static async changeStatusPaid(req, res, next) {
+    const {
+      signature_key,
+      status_code,
+      order_id,
+      gross_amount,
+      transaction_status,
+    } = req.body;
+    const serverKey = process.env.MIDTRANS_SERVER_KEY;
+    const dbTransaction = await sequelize.transaction();
+    try {
+      const stringForHash = `${order_id}${status_code}${gross_amount}${serverKey}`;
+      const hash = await sha512(stringForHash);
+
+      if (hash !== signature_key) {
+        throw {
+          name: "MIDTRANS_SIGNATURE_ERROR",
+        };
+      }
+      const successStatus = ["settlement", "capture"];
+      const isSuccess = successStatus.includes(transaction_status);
+
+      if (!isSuccess) {
+        res.status(200).json({ status: "OK" });
+      }
+
+      const options = {
+        where: { orderId: order_id },
+        transaction: dbTransaction,
+      };
+      await CounselorUser.update({ isPaid: true }, options);
+      await dbTransaction.commit();
+      res.status(200).json({
+        status: "success",
+      });
+    } catch (error) {
+      await dbTransaction.rollback();
       next(error);
     }
   }

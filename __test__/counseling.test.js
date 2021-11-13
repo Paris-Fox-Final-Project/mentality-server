@@ -1,3 +1,4 @@
+const sha512 = require("js-sha512");
 const request = require("supertest");
 const app = require("../app");
 const { generateToken } = require("../helpers/jwt");
@@ -101,7 +102,8 @@ describe("POST /counseling - create counseling schedule", () => {
         const { Counselor } = counseling;
         expect(Counselor).toHaveProperty("User");
         expect(Counselor.User.name).toBe("Vivi");
-
+        expect(counseling).toHaveProperty("orderId");
+        expect(counseling.orderId).toEqual(expect.any(String));
         expect(counseling).toHaveProperty("transaction");
         done();
       })
@@ -231,5 +233,78 @@ describe("PATCH /counseling/:conselingId/done", () => {
         done();
       })
       .catch((error) => done(error));
+  });
+});
+
+describe("PATCH counseling paid status", () => {
+  let counselingData = null;
+  beforeEach((done) => {
+    CounselorUser.findByPk(1)
+      .then((data) => {
+        counselingData = data;
+        done();
+      })
+      .catch((error) => done(error));
+  });
+
+  afterEach((done) => {
+    CounselorUser.update({ isPaid: false }, { where: { id: 1 } })
+      .then(() => done())
+      .catch((error) => done(error));
+  });
+  test("Payment successful with midtrans", (done) => {
+    const serverKey = process.env.MIDTRANS_SERVER_KEY;
+    const stringForHash = `${counselingData.orderId}200${counselingData.transactionAmount}${serverKey}`;
+    let hash = sha512(stringForHash);
+    const payload = {
+      order_id: counselingData.orderId,
+      gross_amount: counselingData.transactionAmount,
+      signature_key: hash,
+      status_code: 200,
+      transaction_status: "settlement",
+    };
+
+    request(app)
+      .post("/counseling/midtrans/notification")
+      .send(payload)
+      .then((response) => {
+        const { status, body } = response;
+        expect(status).toBe(200);
+        expect(body).toHaveProperty("status");
+        expect(body.status).toBe("success");
+        return CounselorUser.findByPk(1);
+      })
+      .then((data) => {
+        expect(data).toEqual(expect.any(Object));
+        expect(data.isPaid).toBe(true);
+        done();
+      });
+  });
+
+  test("Midtrans notification failed - signature key is not valid", (done) => {
+    const signature_key =
+      "2496c78cac93a70ca08014bdaaff08eb7119ef79ef69c4833d4399cada077147febc1a231992eb8665a7e26d89b1dc323c13f721d21c7485f70bff06cca6eed3";
+    const payload = {
+      signature_key,
+      order_id: "example order",
+      gross_amount: 50000,
+      transaction_status: "settlement",
+      status_code: 200,
+    };
+    request(app)
+      .post("/counseling/midtrans/notification")
+      .send(payload)
+      .then((response) => {
+        const { status, body } = response;
+        expect(status).toBe(400);
+        expect(body).toHaveProperty("message");
+        expect(body.message).toBe("Failed Signature Key");
+        return CounselorUser.findByPk(1);
+      })
+      .then((data) => {
+        expect(data).toEqual(expect.any(Object));
+        expect(data.isPaid).toBe(false);
+        done();
+      });
   });
 });
