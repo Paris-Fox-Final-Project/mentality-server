@@ -33,12 +33,13 @@ class UserController {
       if (selectedUser) {
         const isUserPassExist = decodePassword(password, selectedUser.password);
         if (isUserPassExist) {
-          const access_token = generateToken({
+          const payload = {
             id: selectedUser.id,
             email: selectedUser.email,
             role: selectedUser.role,
-          });
-          res.status(200).json({ access_token });
+          }
+          const access_token = generateToken(payload);
+          res.status(200).json({ user: payload,access_token: access_token });
         } else {
           throw { name: "UNAUTHORIZED_LOGIN" };
         }

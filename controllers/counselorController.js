@@ -58,7 +58,7 @@ class CounselorController {
         price: price,
       });
       const payload = {
-        id: createdUserCounselor.id,
+        id: createdCounselor.id,
         email: createdUserCounselor.email,
         role: createdUserCounselor.role,
         name: createdUserCounselor.name,
