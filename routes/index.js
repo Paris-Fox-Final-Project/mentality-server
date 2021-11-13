@@ -10,6 +10,7 @@ const userRouter = require("./userRouter.js");
 const topicRouter = require("./topicRouter.js");
 const { uploadAvatar } = require("../middlewares/multer.js");
 const { avatarStorage } = require("../middlewares/aws.js");
+const CounselingController = require("../controllers/controllerCounseling.js");
 router.post(
   "/register",
   uploadAvatar.single("avatar_url"),
@@ -19,6 +20,10 @@ router.post(
 router.post("/login", userController.login);
 router.post("/admin/register", userController.registerAdmin);
 router.post("/admin/login", userController.loginAdmin);
+router.post(
+  "/counseling/midtrans/notification",
+  CounselingController.changeStatusPaid
+);
 router.use(authentication);
 router.use("/counseling", counselingRouter);
 router.use("/counselors", counselor);

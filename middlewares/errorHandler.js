@@ -45,6 +45,10 @@ const errorHandler = async (err, req, res, next) => {
     case "USER_NOT_FOUND":
       res.status(404).json({ message: "User not found" });
       break;
+    case "MIDTRANS_SIGNATURE_ERROR":
+      res.status(400).json({ message: "Failed Signature Key" });
+      break;
+
     default:
       res.status(500).json({ message: "Internal Server Error" });
       break;

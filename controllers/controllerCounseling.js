@@ -1,10 +1,12 @@
-const { CounselorUser, Counselor, User } = require("../models");
-const moment = require("moment");
+const { CounselorUser, Counselor, User, sequelize } = require("../models");
+const sha512 = require("js-sha512");
+const { nanoid } = require("nanoid");
+const createMidtransTransaction = require("../helpers/midtrans");
 class CounselingController {
   static async createCounseling(req, res, next) {
     const { CounselorId, TopicId, description, schedule, totalSession } =
       req.body;
-    const { id: UserId } = req.user;
+    const { id: UserId, email: userEmail, name: userName } = req.user;
     try {
       const counselor = await Counselor.findByPk(CounselorId, {
         include: [
@@ -16,12 +18,16 @@ class CounselingController {
           },
         ],
       });
+
       if (!counselor) {
         throw {
           name: "COUNSELOR_NOT_FOUND",
         };
       }
+
       const transactionAmount = counselor.price * Number(totalSession);
+      const orderId = nanoid();
+      console.log(orderId, ">>>>>> order id");
       const counseling = await CounselorUser.create({
         TopicId,
         description,
@@ -30,12 +36,32 @@ class CounselingController {
         CounselorId,
         totalSession,
         transactionAmount,
+        orderId,
       });
 
+      const parameter = {
+        transaction_details: {
+          order_id: orderId,
+          gross_amount: counseling.transactionAmount,
+        },
+        credit_card: {
+          secure: true,
+        },
+        customer_details: {
+          first_name: userName,
+          email: userEmail,
+        },
+      };
+
+      const transaction = await createMidtransTransaction(parameter);
       res.status(201).json({
         counseling: {
           ...counseling.toJSON(),
           Counselor: { ...counselor.toJSON() },
+          transaction: {
+            ...transaction,
+            orderId: orderId,
+          },
         },
       });
     } catch (error) {
@@ -79,53 +105,93 @@ class CounselingController {
     }
   }
 
-  static async getAllCounselorCounselingList(req,res,next){
+  static async changeStatusPaid(req, res, next) {
+    const {
+      signature_key,
+      status_code,
+      order_id,
+      gross_amount,
+      transaction_status,
+    } = req.body;
+    const serverKey = process.env.MIDTRANS_SERVER_KEY;
+    const dbTransaction = await sequelize.transaction();
+    try {
+      const stringForHash = `${order_id}${status_code}${gross_amount}${serverKey}`;
+      const hash = await sha512(stringForHash);
+
+      if (hash !== signature_key) {
+        throw {
+          name: "MIDTRANS_SIGNATURE_ERROR",
+        };
+      }
+      const successStatus = ["settlement", "capture"];
+      const isSuccess = successStatus.includes(transaction_status);
+
+      if (!isSuccess) {
+        res.status(200).json({ status: "OK" });
+      }
+
+      const options = {
+        where: { orderId: order_id },
+        transaction: dbTransaction,
+      };
+      await CounselorUser.update({ isPaid: true }, options);
+      await dbTransaction.commit();
+      res.status(200).json({
+        status: "success",
+      });
+    } catch (error) {
+      await dbTransaction.rollback();
+      next(error);
+    }
+  }
+  static async getAllCounselorCounselingList(req, res, next) {
     try {
       const { counselorId } = req.params;
       const counselingLists = await CounselorUser.findAll({
-        where:{
-          CounselorId: counselorId
-        }
-      })
-      res.status(200).json(counselingLists)
+        where: {
+          CounselorId: counselorId,
+        },
+      });
+      res.status(200).json(counselingLists);
     } catch (err) {
-      console.log(err, 'get all counselor counseling liset')
-      next(err)
+      console.log(err, "get all counselor counseling liset");
+      next(err);
     }
   }
 
-  static async getAllUserCounselingList(req,res,next){
+  static async getAllUserCounselingList(req, res, next) {
     try {
       const { userId } = req.params;
       const counselingLists = await CounselorUser.findAll({
-        where:{
-          UserId: userId
-        }
-      })
-      res.status(200).json(counselingLists)
+        where: {
+          UserId: userId,
+        },
+      });
+      res.status(200).json(counselingLists);
     } catch (err) {
-      console.log(err, 'get all user counseling liset')
-      next(err)
+      console.log(err, "get all user counseling liset");
+      next(err);
     }
   }
 
-  static async getCounselingDetail(req,res,next){
+  static async getCounselingDetail(req, res, next) {
     try {
       const { counselingId } = req.params;
-      const counselingDetail = await CounselorUser.findByPk(counselingId,{
+      const counselingDetail = await CounselorUser.findByPk(counselingId, {
         include: {
           model: User,
           attributes: {
-            exclude: ["password","createdAt","updatedAt"]
-          }
-        }
-      })
-      if(!counselingDetail){
-        throw {name: "COUNSELING_NOT_FOUND"}
+            exclude: ["password", "createdAt", "updatedAt"],
+          },
+        },
+      });
+      if (!counselingDetail) {
+        throw { name: "COUNSELING_NOT_FOUND" };
       }
-      res.status(200).json(counselingDetail)
+      res.status(200).json(counselingDetail);
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 }

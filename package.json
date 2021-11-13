@@ -26,9 +26,12 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "js-sha512": "^0.8.0",
     "jsonwebtoken": "^8.5.1",
+    "midtrans-client": "^1.2.5",
     "moment": "^2.29.1",
     "multer": "^1.4.3",
+    "nanoid": "^3.1.30",
     "pg": "^8.7.1",
     "sequelize": "^6.9.0"
   },
