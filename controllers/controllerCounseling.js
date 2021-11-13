@@ -145,6 +145,55 @@ class CounselingController {
       next(error);
     }
   }
+  static async getAllCounselorCounselingList(req, res, next) {
+    try {
+      const { counselorId } = req.params;
+      const counselingLists = await CounselorUser.findAll({
+        where: {
+          CounselorId: counselorId,
+        },
+      });
+      res.status(200).json(counselingLists);
+    } catch (err) {
+      console.log(err, "get all counselor counseling liset");
+      next(err);
+    }
+  }
+
+  static async getAllUserCounselingList(req, res, next) {
+    try {
+      const { userId } = req.params;
+      const counselingLists = await CounselorUser.findAll({
+        where: {
+          UserId: userId,
+        },
+      });
+      res.status(200).json(counselingLists);
+    } catch (err) {
+      console.log(err, "get all user counseling liset");
+      next(err);
+    }
+  }
+
+  static async getCounselingDetail(req, res, next) {
+    try {
+      const { counselingId } = req.params;
+      const counselingDetail = await CounselorUser.findByPk(counselingId, {
+        include: {
+          model: User,
+          attributes: {
+            exclude: ["password", "createdAt", "updatedAt"],
+          },
+        },
+      });
+      if (!counselingDetail) {
+        throw { name: "COUNSELING_NOT_FOUND" };
+      }
+      res.status(200).json(counselingDetail);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = CounselingController;

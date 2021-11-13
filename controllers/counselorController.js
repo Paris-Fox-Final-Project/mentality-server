@@ -39,8 +39,7 @@ class CounselorController {
   static async createCounselor(req, res, next) {
     const avatarUrl = req.avatarUrl;
     try {
-      const { email, password, name, gender, motto, specialist, about, price } =
-        req.body;
+      const { email, password, name, gender, motto, specialist, about, price } = req.body;
 
       const createdUserCounselor = await User.create({
         email: email,
