@@ -9,14 +9,14 @@ router.get("/", CounselorController.getCounselor);
 
 router.get("/:id", CounselorController.getCounselorById);
 
+router.use(authorization)
 router.post(
   "/",
   uploadAvatar.single("avatar_url"),
   avatarStorage,
-  authorization,
   CounselorController.createCounselor
 );
 
-router.put("/:id", authorization, CounselorController.updateCounselor);
+router.put("/:id", CounselorController.updateCounselor);
 
 module.exports = router;

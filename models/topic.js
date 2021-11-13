@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Topic extends Model {
     /**
@@ -12,25 +10,28 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-  };
-  Topic.init({
-    name: {
-      type:DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          args: true,
-          msg: "Topic is required"
+  }
+  Topic.init(
+    {
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "topic name is required",
+          },
+          notNull: {
+            args: true,
+            msg: "topic name cannot null!",
+          },
         },
-        notNull: {
-          args: true,
-          msg: "Topic cannot null!"
-        }
-      }
+      },
+    },
+    {
+      sequelize,
+      modelName: "Topic",
     }
-  }, {
-    sequelize,
-    modelName: 'Topic',
-  });
+  );
   return Topic;
 };
