@@ -93,6 +93,36 @@ class CounselingController {
       next(err)
     }
   }
+
+  static async getAllUserCounselingList(req,res,next){
+    try {
+      const { userId } = req.params;
+      const counselingLists = await CounselorUser.findAll({
+        where:{
+          UserId: userId
+        }
+      })
+      res.status(200).json(counselingLists)
+    } catch (err) {
+      console.log(err, 'get all user counseling liset')
+      next(err)
+    }
+  }
+
+  static async getCounselingDetail(req,res,next){
+    try {
+      const { counselingId } = req.params;
+      console.log('masuk sini')
+      const counselingDetail = await CounselorUser.findByPk(counselingId,{
+        
+      })
+      console.log(counselingDetail)
+      res.status(200).json(counselingDetail)
+    } catch (err) {
+      console.log(err, 'get counsling detail')
+      next(err)
+    }
+  }
   // disini
 }
 
