@@ -2,10 +2,10 @@ const { Router } = require("express");
 const TopicController = require("../controllers/TopicController");
 const router = Router();
 
-router.get('/', TopicController.getItem);
-router.get('/:id', TopicController.getItemById);
-router.post('/', TopicController.postItem);
-router.put('/:id', TopicController.putItem);
-router.delete('/:id', TopicController.deleteItem);
+router.post("/topics", TopicController.postItem);
+router.get("/topics", TopicController.getItem);
+router.get("/topics/:id", TopicController.getItemById);
+router.put("/topics/:id", TopicController.putItem);
+router.delete("/topics/:id", TopicController.deleteItem);
 
-module.exports = router
+module.exports = router;
