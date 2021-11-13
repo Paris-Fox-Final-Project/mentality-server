@@ -114,12 +114,18 @@ class CounselingController {
       const { counselingId } = req.params;
       console.log('masuk sini')
       const counselingDetail = await CounselorUser.findByPk(counselingId,{
-        
+        include: {
+          model: User,
+          attributes: {
+            exclude: ["password","createdAt","updatedAt"]
+          }
+        }
       })
-      console.log(counselingDetail)
+      if(!counselingDetail){
+        throw {name: "COUNSELING_NOT_FOUND"}
+      }
       res.status(200).json(counselingDetail)
     } catch (err) {
-      console.log(err, 'get counsling detail')
       next(err)
     }
   }
