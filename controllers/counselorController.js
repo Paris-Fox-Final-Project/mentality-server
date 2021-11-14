@@ -3,7 +3,7 @@ const { Counselor, User } = require("../models");
 class CounselorController {
   static async getCounselor(req, res, next) {
     try {
-      const counselors = await Counselor.findAll();
+      const counselors = await Counselor.findAll({ include: [{ model: User }] });
       res.status(200).json(counselors);
     } catch (err) {
       next(err);
