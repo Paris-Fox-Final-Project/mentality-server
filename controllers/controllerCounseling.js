@@ -1,4 +1,4 @@
-const { CounselorUser, Counselor, User, sequelize } = require("../models");
+const { CounselorUser, Counselor, User,Topic, sequelize } = require("../models");
 const sha512 = require("js-sha512");
 const { nanoid } = require("nanoid");
 const createMidtransTransaction = require("../helpers/midtrans");
@@ -149,6 +149,12 @@ class CounselingController {
     try {
       const { counselorId } = req.params;
       const counselingLists = await CounselorUser.findAll({
+        include: {
+          model: User,
+          attributes:{
+            exclue: ["password","createdAt","updatedAt"]
+          }
+        },
         where: {
           CounselorId: counselorId,
         },
@@ -179,12 +185,19 @@ class CounselingController {
     try {
       const { counselingId } = req.params;
       const counselingDetail = await CounselorUser.findByPk(counselingId, {
-        include: {
-          model: User,
-          attributes: {
-            exclude: ["password", "createdAt", "updatedAt"],
-          },
-        },
+        include: [
+          {
+            model: User,
+            attributes: {
+              exclude: ["password", "createdAt", "updatedAt"],
+            },
+          },{
+            model: Topic,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            }
+          }
+        ]
       });
       if (!counselingDetail) {
         throw { name: "COUNSELING_NOT_FOUND" };

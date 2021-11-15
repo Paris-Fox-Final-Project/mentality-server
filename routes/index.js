@@ -3,6 +3,7 @@ const errorHandler = require("../middlewares/errorHandler.js");
 const userController = require("../controllers/controllerUser.js");
 const authentication = require("../middlewares/authentication.js");
 const counselingRouter = require("./counselingRouter.js");
+const videocallRouter = require("./videocallRouter.js")
 const router = express.Router();
 const counselor = require("./counselorRoute");
 const userRouter = require("./userRouter.js");
@@ -29,6 +30,7 @@ router.use("/counseling", counselingRouter);
 router.use("/counselors", counselor);
 router.use("/users", userRouter);
 router.use("/topics", topicRouter);
+router.use("/videocall", videocallRouter)
 router.use(errorHandler);
 
 module.exports = router;
