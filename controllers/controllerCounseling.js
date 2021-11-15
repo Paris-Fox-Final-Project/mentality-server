@@ -176,6 +176,9 @@ class CounselingController {
     try {
       const { userId } = req.params;
       const counselingLists = await CounselorUser.findAll({
+        order: [
+          ["schedule", "ASC"]
+        ],
         where: {
           UserId: userId,
         },

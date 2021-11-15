@@ -1,4 +1,4 @@
-const { Counselor, User } = require("../models");
+const { Counselor, User, Review } = require("../models");
 
 class CounselorController {
   static async getCounselor(req, res, next) {
@@ -26,7 +26,9 @@ class CounselorController {
             attributes: {
               exclude: ["password", "createdAt", "updatedAt"],
             },
-          },
+          },{
+            model: Review
+          }
         ],
         where: {
           id: id,
