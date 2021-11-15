@@ -128,6 +128,7 @@ class CounselingController {
       const isSuccess = successStatus.includes(transaction_status);
 
       if (!isSuccess) {
+        console.log("masuk ke sini gk nich?")
         // tambahin destroy counselorUser
         await CounselorUser.destroy({
           where: {
@@ -135,6 +136,7 @@ class CounselingController {
           }
         })
         res.status(200).json({ status: "OK" });
+        return
       } else {
         const options = {
           where: { orderId: order_id },
@@ -167,7 +169,6 @@ class CounselingController {
       });
       res.status(200).json(counselingLists);
     } catch (err) {
-      console.log(err, "get all counselor counseling liset");
       next(err);
     }
   }
@@ -175,18 +176,14 @@ class CounselingController {
   static async getAllUserCounselingList(req, res, next) {
     try {
       const { userId } = req.params;
+
       const counselingLists = await CounselorUser.findAll({
-        order: [
-          ["schedule", "ASC"]
-        ],
         where: {
           UserId: userId,
-          isDone: false
         },
       });
       res.status(200).json(counselingLists);
     } catch (err) {
-      console.log(err, "get all user counseling liset");
       next(err);
     }
   }
