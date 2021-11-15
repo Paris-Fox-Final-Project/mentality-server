@@ -1,4 +1,4 @@
-const { User } = require("../models/index.js");
+const { User, Counselor } = require("../models/index.js");
 const { decodePassword } = require("../helpers/bcrypt.js");
 const { generateToken } = require("../helpers/jwt.js");
 
@@ -37,8 +37,19 @@ class UserController {
             id: selectedUser.id,
             email: selectedUser.email,
             role: selectedUser.role,
+            name: selectedUser.name
           }
           const access_token = generateToken(payload);
+          if(payload.role === 'counselor'){
+            const counselor = await Counselor.findOne({
+              where:{
+                UserId:payload.id
+              }
+            })
+            console.log(counselor, 'counselor login')
+            res.status(200).json({ user: {payload, ...counselor},access_token: access_token });
+          }
+          
           res.status(200).json({ user: payload,access_token: access_token });
         } else {
           throw { name: "UNAUTHORIZED_LOGIN" };

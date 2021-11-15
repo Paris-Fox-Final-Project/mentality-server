@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       CounselorUser.belongsTo(models.User)
+      CounselorUser.belongsTo(models.Topic)
     }
   }
   CounselorUser.init(

@@ -3,7 +3,12 @@ const { Counselor, User } = require("../models");
 class CounselorController {
   static async getCounselor(req, res, next) {
     try {
-      const counselors = await Counselor.findAll({ include: [{ model: User }] });
+      const counselors = await Counselor.findAll({ include: [{
+        model: User,
+        attributes: {
+          exclude: ["password", "createdAt", "updatedAt"],
+        },
+        }] });
       res.status(200).json(counselors);
     } catch (err) {
       next(err);
