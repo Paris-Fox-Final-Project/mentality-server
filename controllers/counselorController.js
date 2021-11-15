@@ -3,7 +3,7 @@ const { Counselor, User } = require("../models");
 class CounselorController {
   static async getCounselor(req, res, next) {
     try {
-      const counselors = await Counselor.findAll();
+      const counselors = await Counselor.findAll({ include: [{ model: User }] });
       res.status(200).json(counselors);
     } catch (err) {
       next(err);
@@ -58,7 +58,7 @@ class CounselorController {
         price: price,
       });
       const payload = {
-        id: createdUserCounselor.id,
+        id: createdCounselor.id,
         email: createdUserCounselor.email,
         role: createdUserCounselor.role,
         name: createdUserCounselor.name,
