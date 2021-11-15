@@ -181,6 +181,7 @@ class CounselingController {
         ],
         where: {
           UserId: userId,
+          isDone: false
         },
       });
       res.status(200).json(counselingLists);
