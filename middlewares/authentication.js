@@ -7,8 +7,11 @@ const authentication = async (req, res, next) => {
     if (token) {
       const verifiedToken = checkToken(token);
       if (verifiedToken) {
+        // const verifiedUser = await User.findOne({
+        //   where: { email: verifiedToken.email },
+        // });
         const verifiedUser = await User.findOne({
-          where: { email: verifiedToken.email },
+          where: { id: verifiedToken.id },
         });
         if (verifiedUser) {
           req.user = {

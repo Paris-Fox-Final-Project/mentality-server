@@ -107,6 +107,11 @@ describe("Counserlor Routes Test", () => {
     email: "admin1@gmail.com",
     role: "admin",
   });
+  const access_token_user = generateToken({
+    id: 2,
+    email: "user1@gmail.com",
+    role: "counselor",
+  });
   const falsyToken =
     "eyJhbGciOiJIUzI1NiIsInR5cCCI6MSwiZW1haWwiOiJhZG1pbjFAZ21haWwuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjM2NjIwODkyfQ.hCoxGBcGWR3b1DiVfTJ9Nz2PpLI3C1D_Sr0jLKlwQPU";
 
@@ -264,6 +269,22 @@ describe("Counserlor Routes Test", () => {
           const { body, status } = response;
           expect(status).toBe(401);
           expect(body).toHaveProperty("message", "Access Token is Required");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    test("401 Failed create counselor unauthorize", (done) => {
+      request(app)
+        .post("/counselors")
+        .set("access_token", access_token_user)
+        .send(createTestCase)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(403);
+          expect(body).toHaveProperty("message", "Access Feature is Forbidden");
           done();
         })
         .catch((err) => {

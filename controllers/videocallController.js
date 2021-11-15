@@ -1,7 +1,10 @@
 const axios = require("axios")
-const dailyKey = process.env.DAILY_API_KEY
+const dailyKey = process.env.DAILY_API_KEY || "a3fdbd0c05718b0604ccb0aadd96108c7990be061e67ba7a482630907364036f"
 
 const rumus = Math.floor((Date.now()/1000)) + 86400 //'exp' : 
+// 86400 1 hari dalam detik
+let contoh = "2021-11-15 18:00:00.000 +0700"
+const rumusnbf = Math.floor(Date.parse(contoh)/1000)
 
 // atur gk bisa join sebelum waktunya
 // nbf: integer
@@ -39,8 +42,8 @@ class VideocallController{
                         "start_audio_off":true,
                         "start_video_off":true,
                         "max_participants": 2,
-                        // "enable_prejoin_ui": true,
-                        "hide_daily_branding": true
+                        // "hide_daily_branding": true,
+                        "nbf": rumusnbf
                     }
                  }
             })
@@ -50,22 +53,22 @@ class VideocallController{
             console.log(err, 'err create room vidcall')
         }
     }
-    static async joinRoom(req,res,next){
-        // res.send("join to room")
-        try {
-            const join = await axios({
-                url: "https://api.daily.co/v1/rooms/mentality",
-                method: "GET",
-                headers:{
-                    'content-type': 'application/json',
-                    authorization: 'Bearer ' + dailyKey
-                }
-            })
-            console.log(join, 'hoin')
-            res.status(200).json(join.data.url)
-        } catch (err) {
-            console.log(err, 'get join room')
-        }
-    }
+    // static async joinRoom(req,res,next){
+    //     // res.send("join to room")
+    //     try {
+    //         const join = await axios({
+    //             url: "https://api.daily.co/v1/rooms/mentality",
+    //             method: "GET",
+    //             headers:{
+    //                 'content-type': 'application/json',
+    //                 authorization: 'Bearer ' + dailyKey
+    //             }
+    //         })
+    //         console.log(join, 'hoin')
+    //         res.status(200).json(join.data.url)
+    //     } catch (err) {
+    //         console.log(err, 'get join room')
+    //     }
+    // }
 }
 module.exports = VideocallController
