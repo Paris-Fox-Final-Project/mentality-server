@@ -188,7 +188,7 @@ describe("PATCH /counseling/:conselingId/done", () => {
       CounselorId: 1,
       transactionAmount: 195000,
       UserId: 1,
-      schedule: "2021-11-15 16:00:00+07",
+      schedule: "3022-11-15 16:00:00+07",
       isPaid: true,
       totalSession: 1,
       description: "example of description",
@@ -240,6 +240,7 @@ describe("PATCH /counseling/:conselingId/done", () => {
       .set({ access_token: token })
       .then((response) => {
         const { body, status } = response;
+        console.log(body, "|||||||||||||||||||||||||")
         expect(body).toEqual(expect.any(Object));
         expect(body).toHaveProperty("message");
         expect(body.message).toBe("Sorry, counseling hasn't started yet");
