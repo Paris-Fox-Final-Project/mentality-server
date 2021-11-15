@@ -53,22 +53,22 @@ class VideocallController{
             console.log(err, 'err create room vidcall')
         }
     }
-    static async joinRoom(req,res,next){
-        // res.send("join to room")
-        try {
-            const join = await axios({
-                url: "https://api.daily.co/v1/rooms/mentality",
-                method: "GET",
-                headers:{
-                    'content-type': 'application/json',
-                    authorization: 'Bearer ' + dailyKey
-                }
-            })
-            console.log(join, 'hoin')
-            res.status(200).json(join.data.url)
-        } catch (err) {
-            console.log(err, 'get join room')
-        }
-    }
+    // static async joinRoom(req,res,next){
+    //     // res.send("join to room")
+    //     try {
+    //         const join = await axios({
+    //             url: "https://api.daily.co/v1/rooms/mentality",
+    //             method: "GET",
+    //             headers:{
+    //                 'content-type': 'application/json',
+    //                 authorization: 'Bearer ' + dailyKey
+    //             }
+    //         })
+    //         console.log(join, 'hoin')
+    //         res.status(200).json(join.data.url)
+    //     } catch (err) {
+    //         console.log(err, 'get join room')
+    //     }
+    // }
 }
 module.exports = VideocallController

@@ -128,18 +128,24 @@ class CounselingController {
       const isSuccess = successStatus.includes(transaction_status);
 
       if (!isSuccess) {
+        // tambahin destroy counselorUser
+        await CounselorUser.destroy({
+          where: {
+            orderId: order_id
+          }
+        })
         res.status(200).json({ status: "OK" });
+      } else {
+        const options = {
+          where: { orderId: order_id },
+          transaction: dbTransaction,
+        };
+        await CounselorUser.update({ isPaid: true }, options);
+        await dbTransaction.commit();
+        res.status(200).json({
+          status: "success",
+        });
       }
-
-      const options = {
-        where: { orderId: order_id },
-        transaction: dbTransaction,
-      };
-      await CounselorUser.update({ isPaid: true }, options);
-      await dbTransaction.commit();
-      res.status(200).json({
-        status: "success",
-      });
     } catch (error) {
       await dbTransaction.rollback();
       next(error);
