@@ -1,7 +1,7 @@
 [
     {
         "CounselorId": 1,
-        "UserId": 4,
+        "UserId": 2,
         "TopicId": 2,
         "description": "Ditinggal pacar",
         "isDone": false,
@@ -12,12 +12,23 @@
     },
     {
         "CounselorId": 2,
-        "UserId": 5,
+        "UserId": 3,
         "TopicId": 4,
         "description": "Ditinggal pacar",
         "isDone": false,
         "isPaid": false,
         "transactionAmount": 150000,
+        "schedule": "2021-11-19 15:00:00 +07",
+        "totalSession":  1
+    },
+    {
+        "CounselorId": 2,
+        "UserId": 2,
+        "TopicId": 4,
+        "description": "Ditinggal istri",
+        "isDone": false,
+        "isPaid": false,
+        "transactionAmount": 500000,
         "schedule": "2021-11-19 15:00:00 +07",
         "totalSession":  1
     }
