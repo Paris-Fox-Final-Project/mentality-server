@@ -1,6 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 const { Sequelize } = require(".");
+const formatEndDate = require("../helpers/endDateFormat")
 module.exports = (sequelize, DataTypes) => {
   class CounselorUser extends Model {
     /**
@@ -55,6 +56,18 @@ module.exports = (sequelize, DataTypes) => {
       orderId: {
         type: DataTypes.STRING,
       },
+      enddate: {
+        type: DataTypes.DATE,
+        validate: {
+          isDate: {
+            msg: "invalid schedule",
+          },
+          isAfter: {
+            args: new Date().toISOString().substring(0, 10),
+            msg: "invalid schedule",
+          },
+        },
+      }
     },
     {
       sequelize,
@@ -67,6 +80,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   CounselorUser.afterValidate((counselorUser) => {
     counselorUser.schedule = `${counselorUser.schedule}+07`;
+    counselorUser.enddate = formatEndDate(counselorUser.schedule,counselorUser.totalSession);
   });
   return CounselorUser;
 };
