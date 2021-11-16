@@ -133,8 +133,10 @@ class CounselingController {
         await CounselorUser.destroy({
           where: {
             orderId: order_id
-          }
+          },
+          transaction: dbTransaction,
         })
+        await dbTransaction.commit();
         res.status(200).json({ status: "OK" });
         return
       } else {
