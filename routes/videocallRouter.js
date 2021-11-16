@@ -4,6 +4,6 @@ const videocallRouter = Router()
 
 
 videocallRouter.post("/rooms", VideocallController.createRoom)
-videocallRouter.get("/rooms/:name", VideocallController.joinRoom)
+// videocallRouter.get("/rooms/:name", VideocallController.joinRoom)
 
 module.exports = videocallRouter

@@ -2,6 +2,8 @@ const request = require("supertest");
 const app = require("../app.js");
 const { sequelize } = require("../models");
 const { queryInterface } = sequelize;
+const { encodePassword } = require("../helpers/bcrypt");
+const { User } = require("../models");
 
 const adminRegister = {
   email: "admintest@mail.com",
@@ -11,6 +13,27 @@ const adminRegister = {
   gender: "admin gender",
   avatarUrl: "admin image",
 };
+
+const userTest1 = {
+  email: "user5@gmail.com",
+  password: encodePassword("789456123"),
+  role: "user",
+  name: "user5",
+  gender: "Male",
+  avatarUrl:
+    "https://images.unsplash.com/photo-1636429970501-433ac2ff2f4a?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80",
+};
+
+beforeAll((done) => {
+  User.create(userTest1)
+    .then(() => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
 
 afterAll((done) => {
   queryInterface
@@ -248,6 +271,27 @@ describe("Admin Routes Test", () => {
           expect(status).toBe(401);
           expect(body).toEqual(expect.any(Object));
           expect(body).toHaveProperty("message", "Invalid Email/Password");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
+    test("401 - FAILED] Login - User Authentication with Wrong Role", (done) => {
+      const adminLogin = {
+        email: "user5@gmail.com",
+        password: "789456123",
+      };
+      request(app)
+        .post("/admin/login")
+        .send(adminLogin)
+        .then((response) => {
+          const { body, status } = response;
+          console.log(body, "||||||||||||||")
+          // expect(status).toBe(401);
+          // expect(body).toEqual(expect.any(Object));
+          // expect(body).toHaveProperty("message", "Invalid Role Authentication");
           done();
         })
         .catch((err) => {

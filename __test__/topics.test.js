@@ -2,6 +2,7 @@ const { response } = require("express");
 const request = require("supertest");
 const app = require("../app");
 const { Topic, sequelize, User } = require("../models");
+const { generateToken } = require("../helpers/jwt");
 
 const user = {
   email: "johnganteng@mail.com",
@@ -94,10 +95,29 @@ describe("GET /topics -  Get all topics test", () => {
         done(error);
       });
   });
+  test("(401 - Error) Error Authentication is failed", (done) => {
+    const tipu = {
+      id: 99,
+      name: "penipu",
+      email: "penipu@penipu.com",
+      role: "user"
+    }
+    request(app)
+      .get("/topics")
+      .set({ access_token: generateToken(tipu) })
+      .then((response) => {
+        const { body } = response;
+        expect(body).toHaveProperty("message", "Authentication is Failed");
+        done();
+      })
+      .catch((error) => {
+        done(error);
+      });
+  });
 });
 
 describe("GET /topics/:id - Get topic by id", () => {
-  test("(404 - NOT FOUND) Response should have the correct property and value", (done) => {
+  test("(200 - OK) Response should have the correct property and value", (done) => {
     request(app)
       .get("/topics/1")
       .set({ access_token })
@@ -116,7 +136,7 @@ describe("GET /topics/:id - Get topic by id", () => {
       });
   });
 
-  test("(200 - OK) Response should have the correct property and value", (done) => {
+  test("(404 - NOT FOUND) Response should have the correct property and value", (done) => {
     request(app)
       .get("/topics/999")
       .set({ access_token })

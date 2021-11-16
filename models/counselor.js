@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Counselor.belongsTo(models.User);
+      Counselor.hasMany(models.Review)
+      Counselor.hasMany(models.CounselorUser)
     }
   }
   Counselor.init(

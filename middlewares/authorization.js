@@ -8,7 +8,7 @@ const authorization = async (req, res, next) => {
 
     if (authUser.role === "admin") {
       next()
-    } else {
+    } else { // ini belom ada
       throw { name: "FORBIDDEN_ACCESS" } 
     }
     
