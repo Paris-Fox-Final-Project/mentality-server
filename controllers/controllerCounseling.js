@@ -115,6 +115,8 @@ class CounselingController {
     } = req.body;
     const serverKey = process.env.MIDTRANS_SERVER_KEY;
     const dbTransaction = await sequelize.transaction();
+    const axios = require("axios")
+    const dailyKey = process.env.DAILY_API_KEY || "a3fdbd0c05718b0604ccb0aadd96108c7990be061e67ba7a482630907364036f"
     try {
       const stringForHash = `${order_id}${status_code}${gross_amount}${serverKey}`;
       const hash = await sha512(stringForHash);
@@ -140,11 +142,49 @@ class CounselingController {
         res.status(200).json({ status: "OK" });
         return
       } else {
+
+        //---------------------------------------------------
+        const find = await CounselorUser.findOne({
+          where: {
+            orderId: order_id
+          }
+        })
+        // console.log(find, 'ini find')
+        const rumusnbf = Math.floor(Date.parse(find.schedule)/1000)
+        const expired = Math.floor(Date.parse(find.enddate)/1000)
+        // console.log(rumusnbf,expired, "dpt exp sama nbf")
+        const create = await axios({
+            url: "https://api.daily.co/v1/rooms",
+            method: "POST",
+            headers:{
+                'Content-Type': 'application/json',
+                authorization: 'Bearer ' + dailyKey
+            },
+            data: { 
+                // name: "mentality",
+                privacy: "public",
+                properties: {
+                    "start_audio_off":true,
+                    "start_video_off":true,
+                    "max_participants": 2,
+                    // "hide_daily_branding": true,
+                    "nbf": rumusnbf,
+                    "exp": expired
+                }
+             }
+        })
+        console.log(create.data.url, 'balikan create room?');
         const options = {
           where: { orderId: order_id },
           transaction: dbTransaction,
         };
-        await CounselorUser.update({ isPaid: true }, options);
+
+        await CounselorUser.update({
+          dailyUrl: create.data.url,
+          isPaid: true
+        },options)
+        //---------------------------------------------------
+        // await CounselorUser.update({ isPaid: true }, options);
         await dbTransaction.commit();
         res.status(200).json({
           status: "success",
@@ -152,6 +192,7 @@ class CounselingController {
       }
     } catch (error) {
       await dbTransaction.rollback();
+      // console.log(error, "error di midtrans update status paid")
       next(error);
     }
   }

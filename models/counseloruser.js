@@ -68,6 +68,9 @@ module.exports = (sequelize, DataTypes) => {
             msg: "invalid schedule",
           },
         },
+      },
+      dailyUrl:{
+        type: DataTypes.STRING
       }
     },
     {
