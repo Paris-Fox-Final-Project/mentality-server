@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Counselor.belongsTo(models.User);
       Counselor.hasMany(models.Review)
+      Counselor.hasMany(models.CounselorUser)
     }
   }
   Counselor.init(

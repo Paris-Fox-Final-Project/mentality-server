@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       CounselorUser.belongsTo(models.User)
       CounselorUser.belongsTo(models.Topic)
+      CounselorUser.belongsTo(models.Counselor)
     }
   }
   CounselorUser.init(

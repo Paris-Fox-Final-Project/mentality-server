@@ -162,7 +162,7 @@ class CounselingController {
         include: {
           model: User,
           attributes:{
-            exclue: ["password","createdAt","updatedAt"]
+            exclude: ["password","createdAt","updatedAt"]
           }
         },
         where: {
@@ -180,6 +180,18 @@ class CounselingController {
       const { userId } = req.params;
 
       const counselingLists = await CounselorUser.findAll({
+        include: {
+          model: Counselor,
+          attributes:{
+            exclude: ["password","createdAt","updatedAt"]
+          },
+          include:{
+            model: User,
+            attributes:{
+              exclude: ["password","createdAt","updatedAt"]
+            },
+          }
+        },
         where: {
           UserId: userId,
         },
