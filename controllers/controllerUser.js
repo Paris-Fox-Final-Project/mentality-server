@@ -48,14 +48,14 @@ class UserController {
             });
             res.status(200).json({
               user: {
-                User: { ...selectedUser.toJSON() },
+                ...selectedUser.toJSON(),
                 ...counselor.toJSON(),
               },
               access_token: access_token,
             });
+          } else {
+            res.status(200).json({ user: payload, access_token: access_token });
           }
-
-          res.status(200).json({ user: payload, access_token: access_token });
         } else {
           throw { name: "UNAUTHORIZED_LOGIN" };
         }
