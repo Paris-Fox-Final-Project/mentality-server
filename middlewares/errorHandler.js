@@ -2,6 +2,7 @@ const errorHandler = async (err, req, res, next) => {
   const { name } = err;
   let message = "Internal Server Error";
   let code = 500;
+  console.log(err, 'errrrrr')
   switch (name) {
     case "SequelizeUniqueConstraintError":
       code = 400; 
