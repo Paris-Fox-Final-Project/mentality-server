@@ -49,7 +49,9 @@ class UserController {
             res.status(200).json({
               user: {
                 ...selectedUser.toJSON(),
-                ...counselor.toJSON(),
+                Counselor: {
+                  ...counselor.toJSON(),
+                },
               },
               access_token: access_token,
             });
